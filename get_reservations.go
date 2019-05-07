@@ -141,9 +141,10 @@ func (r *GetReservationsRequest) NewResponseBody() *GetReservationsResponseBody 
 }
 
 type GetReservationsResponseBody struct {
-	Success bool `json:"success"`
-	Count   int  `json:"count"`
-	Total   int  `json:"total"`
+	Success bool   `json:"success"`
+	Count   int    `json:"count"`
+	Total   int    `json:"total"`
+	Message string `json:"message"`
 	Data    []struct {
 		PropertyID           string   `json:"propertyID"`    // Properties identifier
 		ReservationID        string   `json:"reservationID"` // Reservation's unique identifier

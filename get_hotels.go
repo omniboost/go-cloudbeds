@@ -91,9 +91,10 @@ func (r *GetHotelsRequest) NewResponseBody() *GetHotelsResponseBody {
 }
 
 type GetHotelsResponseBody struct {
-	Success bool `json:"success"`
-	Count   int  `json:"count"`
-	Total   int  `json:"total"`
+	Success bool   `json:"success"`
+	Count   int    `json:"count"`
+	Total   int    `json:"total"`
+	Message string `json:"message"`
 	Data    []struct {
 		PropertyID          string `json:"propertyID"`
 		PropertyName        string `json:"propertyName"`

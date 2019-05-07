@@ -94,6 +94,7 @@ type GetCustomFieldsResponseBody struct {
 	Success bool       `json:"success"`
 	Count   int        `json:"count"`
 	Total   int        `json:"total"`
+	Message string     `json:"message"`
 	Data    []struct{} `json:"data"`
 }
 
