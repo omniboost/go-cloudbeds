@@ -53,7 +53,6 @@ func (c *Client) NewUserinfoPathParams() *UserinfoPathParams {
 }
 
 type UserinfoPathParams struct {
-	AdministrationID string
 }
 
 func (p *UserinfoPathParams) Params() map[string]string {

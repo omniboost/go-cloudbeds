@@ -53,7 +53,6 @@ func (c *Client) NewGetCustomFieldsPathParams() *GetCustomFieldsPathParams {
 }
 
 type GetCustomFieldsPathParams struct {
-	AdministrationID string
 }
 
 func (p *GetCustomFieldsPathParams) Params() map[string]string {

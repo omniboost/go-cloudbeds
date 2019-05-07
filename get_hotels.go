@@ -53,7 +53,6 @@ func (c *Client) NewGetHotelsPathParams() *GetHotelsPathParams {
 }
 
 type GetHotelsPathParams struct {
-	AdministrationID string
 }
 
 func (p *GetHotelsPathParams) Params() map[string]string {
