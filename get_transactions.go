@@ -38,63 +38,63 @@ type GetTransactionsQueryParams struct {
 	// ID for the properties to be queried (comma-separated).
 	// It can be omitted if the API key is single-property, or to get results from
 	// all properties on an association.
-	PropertyID string `json:"propertyID,omitempty"`
+	PropertyID string `schema:"propertyID,omitempty"`
 	// If the response should include debit transactions
 	// Standaard waarde: true
-	IncludeDebit bool `json:"includeDebit,omitempty"`
-	// If the response should include credit transactions
 	// Standaard waarde: true
-	IncludeCredit bool `json:"includeCredit,omitempty"`
+	IncludeDebit bool `schema:"includeDebit,omitempty"`
+	// If the response should include credit transactions
+	IncludeCredit bool `schema:"includeCredit,omitempty"`
 	// If the response should include deleted transactions
 	// Standaard waarde: false
-	IncludeDeleted bool `json:"includeDeleted,omitempty"`
+	IncludeDeleted bool `schema:"includeDeleted,omitempty"`
 	// Reservation Unique Identifier, used to filter transactions result
 	// If reservationID is informed, and dates are not, all transactions with the
 	// reservationID will be returned.
-	ReservationID string `json:"reservationID,omitempty"`
+	ReservationID string `schema:"reservationID,omitempty"`
 	// Sub Reservation Identifier, used to filter transactions result
-	SubReservationID string `json:"subReservationID,omitempty"`
+	SubReservationID string `schema:"subReservationID,omitempty"`
 	// Room ID, used to filter transactions result
-	RoomID string `json:"roomID,omitempty"`
+	RoomID string `schema:"roomID,omitempty"`
 	// Guest ID, used to filter transactions result
-	GuestID int `json:"guestID,omitempty"`
+	GuestID int `schema:"guestID,omitempty"`
 	// House Account ID, used to filter transactions result
-	HouseAccountID int `json:"houseAccountID,omitempty"`
+	HouseAccountID int `schema:"houseAccountID,omitempty"`
 	// Inferior limit date, used to filter transactions result (posted transaction date)
-	ResultsFrom Date `json:"resultsFrom,omitempty"`
+	ResultsFrom Date `schema:"resultsFrom,omitempty"`
 	// Superior limit date, used to filter transactions result (posted transaction date)
-	ResultsTo Date `json:"resultTo,omitempty"`
+	ResultsTo Date `schema:"resultTo,omitempty"`
 	// Inferior limit date, used to filter transactions result
-	ModifiedFrom Date `json:"modifiedFrom,omitempty"`
+	ModifiedFrom Date `schema:"modifiedFrom,omitempty"`
 	// Superior limit date, used to filter transactions result
-	ModifiedTo Date `json:"modifiedTo,omitempty"`
+	ModifiedTo Date `schema:"modifiedTo,omitempty"`
 	// Inferior limit datetime, used to filter transactions result (creation date of the transaction).
 	// If informed, all other dates are ignored (except createdTo).
 	// If createdFrom is informed, but createdTo is not, the call will return all results since this datetime.
 	// Necessary only if createdTo is sent.
 	// If time portion not given, assumes 00:00:00.
-	CreatedFrom DateTime `json:"createdFrom,omitempty"`
+	CreatedFrom DateTime `schema:"createdFrom,omitempty"`
 	// Superior limit datetime, used to filter transactions result (creation date of the transaction).
 	// If informed (together with createdFrom), all other dates are ignored.
 	// If time portion not given, assumes 23:59:59.
-	CreatedTo DateTime `json:"createdTo,omitempty"`
+	CreatedTo DateTime `schema:"createdTo,omitempty"`
 	// transactionFilter optioneel	String
 	// Transaction filter is used to filter transactions result
 	// Standaard waarde: simple_transactions,adjustments,adjustments_voids,voids,refunds
-	TransactionFilter TransactionFilter `json:"transactionFilter,omitempty"`
+	TransactionFilter TransactionFilter `schema:"transactionFilter,omitempty"`
 	// Results page number
 	// Standaard waarde: 1
-	PageNumber int `json:"pageNumber,omitempty"`
+	PageNumber int `schema:"pageNumber,omitempty"`
 	// Results page size. Max = 100
 	// Standaard waarde: 100
-	PageSize int `json:"pageSize,omitempty"`
+	PageSize int `schema:"pageSize,omitempty"`
 	// Sort response results by field
 	// Toegestane waarden: transactionDateTime, transactionModifiedDateTime, guestCheckIn, guestCheckOut
-	SortBy string `json:"sortBy,omitempty"`
+	SortBy string `schema:"sortBy,omitempty"`
 	// Order response in DESCending or ASCending order, used together with sortBy
 	// Standaard waarde: desc
 	// Toegestane waarden: desc, asc
-	OrderBy string `json:"orderBy,omitempty"`
+	OrderBy string `schema:"orderBy,omitempty"`
 }
 
 func (p GetTransactionsQueryParams) ToURLValues() (url.Values, error) {
@@ -219,4 +219,34 @@ func (r *GetTransactionsRequest) Do() (GetTransactionsResponseBody, error) {
 	responseBody := r.NewResponseBody()
 	_, err = r.client.Do(req, responseBody)
 	return *responseBody, err
+}
+
+func (r *GetTransactionsRequest) All() (GetTransactionsResponseBody, error) {
+	r.QueryParams().PageNumber = 1
+	resp, err := r.Do()
+	if err != nil {
+		return resp, err
+	}
+
+	concat := GetTransactionsResponseBody{
+		Count:   resp.Count,
+		Total:   resp.Total,
+		Success: true,
+		Message: "",
+		Data:    resp.Data,
+	}
+
+	for concat.Count < concat.Total {
+		r.QueryParams().PageNumber = r.QueryParams().PageNumber + 1
+		resp, err := r.Do()
+		if err != nil {
+			return resp, err
+		}
+
+		concat.Count = concat.Count + resp.Count
+		concat.Total = resp.Total
+		concat.Data = append(concat.Data, resp.Data...)
+	}
+
+	return concat, nil
 }

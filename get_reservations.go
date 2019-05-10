@@ -228,3 +228,33 @@ func (r *GetReservationsRequest) Do() (GetReservationsResponseBody, error) {
 	_, err = r.client.Do(req, responseBody)
 	return *responseBody, err
 }
+
+func (r *GetReservationsRequest) All() (GetReservationsResponseBody, error) {
+	r.QueryParams().PageNumber = 1
+	resp, err := r.Do()
+	if err != nil {
+		return resp, err
+	}
+
+	concat := GetReservationsResponseBody{
+		Count:   resp.Count,
+		Total:   resp.Total,
+		Success: true,
+		Message: "",
+		Data:    resp.Data,
+	}
+
+	for concat.Count < concat.Total {
+		r.QueryParams().PageNumber = r.QueryParams().PageNumber + 1
+		resp, err := r.Do()
+		if err != nil {
+			return resp, err
+		}
+
+		concat.Count = concat.Count + resp.Count
+		concat.Total = resp.Total
+		concat.Data = append(concat.Data, resp.Data...)
+	}
+
+	return concat, nil
+}

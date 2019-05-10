@@ -2,7 +2,6 @@ package cloudbeds
 
 import (
 	"encoding/json"
-	"regexp"
 	"strconv"
 	"time"
 )
@@ -70,30 +69,12 @@ func (d *DateTime) UnmarshalJSON(text []byte) (err error) {
 		return nil
 	}
 
-	d.Time, err = time.Parse("2006-01-02", value)
-	if err == nil {
-		return nil
-	}
-
-	// /Date(1488939627017)/
-	re := regexp.MustCompile(`[0-9]+`)
-	match := re.FindString(value)
-	if match == "" {
-		return nil
-	}
-
-	milis, err := strconv.Atoi(match)
-	if err != nil {
-		return err
-	}
-
-	// new Date(milis)
-	d.Time = time.Unix(0, int64(milis)*int64(time.Millisecond))
+	d.Time, err = time.Parse("2006-01-02 15:04:05", value)
 	return err
 }
 
 func (d DateTime) MarshalSchema() string {
-	return d.Format("2006-01-02")
+	return d.Format("2006-01-02 15:04:05")
 }
 
 type Int int
