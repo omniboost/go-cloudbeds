@@ -52,7 +52,7 @@ type GetPaymentsQueryParams struct {
 }
 
 func (p GetPaymentsQueryParams) ToURLValues() (url.Values, error) {
-	encoder := newSchemaEncoder()
+	encoder := NewSchemaEncoder()
 	params := url.Values{}
 
 	err := encoder.Encode(p, params)

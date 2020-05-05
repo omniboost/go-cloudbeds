@@ -18,8 +18,10 @@ func TestGetPayments(t *testing.T) {
 	req := client.NewGetPaymentsRequest()
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	yesterday := today.AddDate(0, 0, -1)
-	req.QueryParams().CreatedFrom = cloudbeds.DateTime{yesterday}
+	// yesterday := today.AddDate(0, 0, -1)
+	// req.QueryParams().CreatedFrom = cloudbeds.DateTime{yesterday}
+	lastYear := today.AddDate(-1, 0, 0)
+	req.QueryParams().CreatedFrom = cloudbeds.DateTime{lastYear}
 	req.QueryParams().CreatedTo = cloudbeds.DateTime{today}
 
 	resp, err := req.Do()

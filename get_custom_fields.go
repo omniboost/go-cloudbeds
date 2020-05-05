@@ -33,7 +33,7 @@ type GetCustomFieldsQueryParams struct {
 }
 
 func (p GetCustomFieldsQueryParams) ToURLValues() (url.Values, error) {
-	encoder := newSchemaEncoder()
+	encoder := NewSchemaEncoder()
 	params := url.Values{}
 
 	err := encoder.Encode(p, params)

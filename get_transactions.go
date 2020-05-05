@@ -98,7 +98,7 @@ type GetTransactionsQueryParams struct {
 }
 
 func (p GetTransactionsQueryParams) ToURLValues() (url.Values, error) {
-	encoder := newSchemaEncoder()
+	encoder := NewSchemaEncoder()
 	params := url.Values{}
 
 	err := encoder.Encode(p, params)
@@ -164,6 +164,8 @@ type GetTransactionsResponseBody struct {
 		PropertyID                     Int      `json:"propertyID"`                     // Property ID
 		ReservationID                  string   `json:"reservationID"`                  // Reservation ID
 		SubReservationID               string   `json:"subReservationID"`               // Sub Reservation ID
+		HouseAccountID                 int      `json:"houseAccountID"`                 // House Account ID
+		HouseAccountName               string   `json:"houseAccountName"`               // House Account Name
 		GuestID                        string   `json:"guestID"`                        // Guest ID
 		PropertyName                   string   `json:"propertyName"`                   // Property Name
 		TransactionDateTime            DateTime `json:"transactionDateTime"`            // DateTime that the transaction was stored

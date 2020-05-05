@@ -28,7 +28,7 @@ func AddQueryParamsToRequest(requestParams interface{}, req *http.Request, skipE
 			return err
 		}
 	} else {
-		encoder := newSchemaEncoder()
+		encoder := NewSchemaEncoder()
 		err := encoder.Encode(requestParams, params)
 		if err != nil {
 			return err
@@ -54,7 +54,7 @@ func AddQueryParamsToRequest(requestParams interface{}, req *http.Request, skipE
 	return nil
 }
 
-func newSchemaEncoder() *schema.Encoder {
+func NewSchemaEncoder() *schema.Encoder {
 	encoder := schema.NewEncoder()
 
 	// register custom encoders
@@ -96,7 +96,7 @@ func newSchemaEncoder() *schema.Encoder {
 	// 	return strconv.FormatBool(nullBool.Bool)
 	// }
 
-	// encoder.RegisterEncoder(Date{}, encodeDate)
+	encoder.RegisterEncoder(Date{}, encodeSchemaMarshaler)
 	encoder.RegisterEncoder(Bool(false), encodeSchemaMarshaler)
 	encoder.RegisterEncoder(DateTime{}, encodeSchemaMarshaler)
 	// encoder.RegisterEncoder(null.Float{}, encodeNullFloat)

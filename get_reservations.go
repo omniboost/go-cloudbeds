@@ -83,7 +83,7 @@ type GetReservationsQueryParams struct {
 }
 
 func (p GetReservationsQueryParams) ToURLValues() (url.Values, error) {
-	encoder := newSchemaEncoder()
+	encoder := NewSchemaEncoder()
 	params := url.Values{}
 
 	err := encoder.Encode(p, params)

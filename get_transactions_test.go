@@ -34,8 +34,10 @@ func TestGetTransactionsAll(t *testing.T) {
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	tomorrow := today.AddDate(0, 0, 1)
-	yesterday := today.AddDate(0, 0, -1)
-	req.QueryParams().ResultsFrom = cloudbeds.Date{yesterday}
+	// yesterday := today.AddDate(0, 0, -1)
+	// req.QueryParams().ResultsFrom = cloudbeds.Date{yesterday}
+	lastYear := today.AddDate(-1, 0, 0)
+	req.QueryParams().CreatedFrom = cloudbeds.DateTime{lastYear}
 	req.QueryParams().ResultsTo = cloudbeds.Date{tomorrow}
 
 	resp, err := req.All()
