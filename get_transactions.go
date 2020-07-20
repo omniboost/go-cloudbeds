@@ -63,7 +63,7 @@ type GetTransactionsQueryParams struct {
 	// Inferior limit date, used to filter transactions result (posted transaction date)
 	ResultsFrom Date `schema:"resultsFrom,omitempty"`
 	// Superior limit date, used to filter transactions result (posted transaction date)
-	ResultsTo Date `schema:"resultTo,omitempty"`
+	ResultsTo Date `schema:"resultsTo,omitempty"`
 	// Inferior limit date, used to filter transactions result
 	ModifiedFrom Date `schema:"modifiedFrom,omitempty"`
 	// Superior limit date, used to filter transactions result
