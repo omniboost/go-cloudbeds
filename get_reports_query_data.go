@@ -10,31 +10,31 @@ import (
 // date range specified. If no date range or reservation is specified, it will
 // return the transactions for the last 7 days, unless stated otherwise.
 
-func (c *Client) NewGetTransactionsRequest() GetTransactionsRequest {
-	return GetTransactionsRequest{
+func (c *Client) NewGetReportsQueryDataRequest() GetReportsQueryDataRequest {
+	return GetReportsQueryDataRequest{
 		client:      c,
-		queryParams: c.NewGetTransactionsQueryParams(),
-		pathParams:  c.NewGetTransactionsPathParams(),
+		queryParams: c.NewGetReportsQueryDataQueryParams(),
+		pathParams:  c.NewGetReportsQueryDataPathParams(),
 		method:      http.MethodGet,
 		headers:     http.Header{},
-		requestBody: c.NewGetTransactionsRequestBody(),
+		requestBody: c.NewGetReportsQueryDataRequestBody(),
 	}
 }
 
-type GetTransactionsRequest struct {
+type GetReportsQueryDataRequest struct {
 	client      *Client
-	queryParams *GetTransactionsQueryParams
-	pathParams  *GetTransactionsPathParams
+	queryParams *GetReportsQueryDataQueryParams
+	pathParams  *GetReportsQueryDataPathParams
 	method      string
 	headers     http.Header
-	requestBody GetTransactionsRequestBody
+	requestBody GetReportsQueryDataRequestBody
 }
 
-func (c *Client) NewGetTransactionsQueryParams() *GetTransactionsQueryParams {
-	return &GetTransactionsQueryParams{}
+func (c *Client) NewGetReportsQueryDataQueryParams() *GetReportsQueryDataQueryParams {
+	return &GetReportsQueryDataQueryParams{}
 }
 
-type GetTransactionsQueryParams struct {
+type GetReportsQueryDataQueryParams struct {
 	// ID for the properties to be queried (comma-separated).
 	// It can be omitted if the API key is single-property, or to get results from
 	// all properties on an association.
@@ -97,7 +97,7 @@ type GetTransactionsQueryParams struct {
 	OrderBy string `schema:"orderBy,omitempty"`
 }
 
-func (p GetTransactionsQueryParams) ToURLValues() (url.Values, error) {
+func (p GetReportsQueryDataQueryParams) ToURLValues() (url.Values, error) {
 	encoder := NewSchemaEncoder()
 	params := url.Values{}
 
@@ -109,53 +109,53 @@ func (p GetTransactionsQueryParams) ToURLValues() (url.Values, error) {
 	return params, nil
 }
 
-func (r *GetTransactionsRequest) QueryParams() *GetTransactionsQueryParams {
+func (r *GetReportsQueryDataRequest) QueryParams() *GetReportsQueryDataQueryParams {
 	return r.queryParams
 }
 
-func (c *Client) NewGetTransactionsPathParams() *GetTransactionsPathParams {
-	return &GetTransactionsPathParams{}
+func (c *Client) NewGetReportsQueryDataPathParams() *GetReportsQueryDataPathParams {
+	return &GetReportsQueryDataPathParams{}
 }
 
-type GetTransactionsPathParams struct {
+type GetReportsQueryDataPathParams struct {
 }
 
-func (p *GetTransactionsPathParams) Params() map[string]string {
+func (p *GetReportsQueryDataPathParams) Params() map[string]string {
 	return map[string]string{}
 }
 
-func (r *GetTransactionsRequest) PathParams() *GetTransactionsPathParams {
+func (r *GetReportsQueryDataRequest) PathParams() *GetReportsQueryDataPathParams {
 	return r.pathParams
 }
 
-func (r *GetTransactionsRequest) SetMethod(method string) {
+func (r *GetReportsQueryDataRequest) SetMethod(method string) {
 	r.method = method
 }
 
-func (r *GetTransactionsRequest) Method() string {
+func (r *GetReportsQueryDataRequest) Method() string {
 	return r.method
 }
 
-func (s *Client) NewGetTransactionsRequestBody() GetTransactionsRequestBody {
-	return GetTransactionsRequestBody{}
+func (s *Client) NewGetReportsQueryDataRequestBody() GetReportsQueryDataRequestBody {
+	return GetReportsQueryDataRequestBody{}
 }
 
-type GetTransactionsRequestBody struct {
+type GetReportsQueryDataRequestBody struct {
 }
 
-func (r *GetTransactionsRequest) RequestBody() *GetTransactionsRequestBody {
+func (r *GetReportsQueryDataRequest) RequestBody() *GetReportsQueryDataRequestBody {
 	return &r.requestBody
 }
 
-func (r *GetTransactionsRequest) SetRequestBody(body GetTransactionsRequestBody) {
+func (r *GetReportsQueryDataRequest) SetRequestBody(body GetReportsQueryDataRequestBody) {
 	r.requestBody = body
 }
 
-func (r *GetTransactionsRequest) NewResponseBody() *GetTransactionsResponseBody {
-	return &GetTransactionsResponseBody{}
+func (r *GetReportsQueryDataRequest) NewResponseBody() *GetReportsQueryDataResponseBody {
+	return &GetReportsQueryDataResponseBody{}
 }
 
-type GetTransactionsResponseBody struct {
+type GetReportsQueryDataResponseBody struct {
 	Success bool   `json:"success"`
 	Count   Int    `json:"count"`
 	Total   Int    `json:"total"`
@@ -202,11 +202,11 @@ type GetTransactionsResponseBody struct {
 	} `json:"data"`
 }
 
-func (r *GetTransactionsRequest) URL() url.URL {
+func (r *GetReportsQueryDataRequest) URL() url.URL {
 	return r.client.GetEndpointURL("getTransactions", r.PathParams())
 }
 
-func (r *GetTransactionsRequest) Do() (GetTransactionsResponseBody, error) {
+func (r *GetReportsQueryDataRequest) Do() (GetReportsQueryDataResponseBody, error) {
 	// Create http request
 	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
@@ -224,14 +224,14 @@ func (r *GetTransactionsRequest) Do() (GetTransactionsResponseBody, error) {
 	return *responseBody, err
 }
 
-func (r *GetTransactionsRequest) All() (GetTransactionsResponseBody, error) {
+func (r *GetReportsQueryDataRequest) All() (GetReportsQueryDataResponseBody, error) {
 	r.QueryParams().PageNumber = 1
 	resp, err := r.Do()
 	if err != nil {
 		return resp, err
 	}
 
-	concat := GetTransactionsResponseBody{
+	concat := GetReportsQueryDataResponseBody{
 		Count:   resp.Count,
 		Total:   resp.Total,
 		Success: true,
