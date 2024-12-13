@@ -10,7 +10,7 @@ func (c *Client) NewGetReportsQueryDataRequest() GetReportsQueryDataRequest {
 		client:      c,
 		queryParams: c.NewGetReportsQueryDataQueryParams(),
 		pathParams:  c.NewGetReportsQueryDataPathParams(),
-		method:      http.MethodGet,
+		method:      http.MethodPost,
 		headers:     http.Header{},
 		requestBody: c.NewGetReportsQueryDataRequestBody(),
 	}
@@ -30,26 +30,6 @@ func (c *Client) NewGetReportsQueryDataQueryParams() *GetReportsQueryDataQueryPa
 }
 
 type GetReportsQueryDataQueryParams struct {
-	PropertyID        string            `schema:"propertyID,omitempty"`
-	IncludeDebit      bool              `schema:"includeDebit,omitempty"`
-	IncludeCredit     bool              `schema:"includeCredit,omitempty"`
-	IncludeDeleted    bool              `schema:"includeDeleted,omitempty"`
-	ReservationID     string            `schema:"reservationID,omitempty"`
-	SubReservationID  string            `schema:"subReservationID,omitempty"`
-	RoomID            string            `schema:"roomID,omitempty"`
-	GuestID           int               `schema:"guestID,omitempty"`
-	HouseAccountID    int               `schema:"houseAccountID,omitempty"`
-	ResultsFrom       Date              `schema:"resultsFrom,omitempty"`
-	ResultsTo         Date              `schema:"resultsTo,omitempty"`
-	ModifiedFrom      Date              `schema:"modifiedFrom,omitempty"`
-	ModifiedTo        Date              `schema:"modifiedTo,omitempty"`
-	CreatedFrom       DateTime          `schema:"createdFrom,omitempty"`
-	CreatedTo         DateTime          `schema:"createdTo,omitempty"`
-	TransactionFilter TransactionFilter `schema:"transactionFilter,omitempty"`
-	PageNumber        int               `schema:"pageNumber,omitempty"`
-	PageSize          int               `schema:"pageSize,omitempty"`
-	SortBy            string            `schema:"sortBy,omitempty"`
-	OrderBy           string            `schema:"orderBy,omitempty"`
 }
 
 func (p GetReportsQueryDataQueryParams) ToURLValues() (url.Values, error) {
@@ -96,6 +76,69 @@ func (s *Client) NewGetReportsQueryDataRequestBody() GetReportsQueryDataRequestB
 }
 
 type GetReportsQueryDataRequestBody struct {
+	PropertyIds []int `json:"property_ids,omitempty"`
+	DatasetID   int   `json:"dataset_id,omitempty"`
+
+	Columns []struct {
+		Cdf struct {
+			Type   string `json:"type,omitempty"`
+			Column string `json:"column,omitempty"`
+		} `json:"cdf,omitempty"`
+
+		Metrics []string `json:"metrics,omitempty"`
+	} `json:"columns,omitempty"`
+
+	GroupRows    string `json:"group_rows,omitempty"`
+	GroupColumns string `json:"group_columns,omitempty"`
+	CustomCdfs   string `json:"custom_cdfs,omitempty"`
+
+	Filters struct {
+		And []struct {
+			Cdf struct {
+				Type   string `json:"type,omitempty"`
+				Column string `json:"column,omitempty"`
+			} `json:"cdf,omitempty"`
+
+			Operator string `json:"operator,omitempty"`
+			Value    string `json:"value,omitempty"`
+
+			Or []struct {
+				Cdf struct {
+					Type   string `json:"type,omitempty"`
+					Column string `json:"column,omitempty"`
+				} `json:"cdf,omitempty"`
+
+				Operator string `json:"operator,omitempty"`
+				Value    string `json:"value,omitempty"`
+			} `json:"or,omitempty"`
+		} `json:"and,omitempty"`
+	} `json:"filters,omitempty"`
+
+	Sort string `json:"sort,omitempty"`
+
+	Settings struct {
+		Details   bool `json:"details,omitempty"`
+		Totals    bool `json:"totals,omitempty"`
+		Transpose bool `json:"transpose,omitempty"`
+	} `json:"settings,omitempty"`
+
+	Periods string `json:"periods,omitempty"`
+
+	Formats struct {
+		Date string `json:"date,omitempty"`
+		Link bool   `json:"link,omitempty"`
+	} `json:"formats,omitempty"`
+
+	Comparisons string `json:"comparisons,omitempty"`
+
+	CustomFieldCdfs []struct {
+		Name string `json:"name,omitempty"`
+
+		Properties []struct {
+			InternalName string `json:"internal_name,omitempty"`
+			PropertyID   int    `json:"property_id,omitempty"`
+		} `json:"properties,omitempty"`
+	} `json:"custom_field_cdfs,omitempty"`
 }
 
 func (r *GetReportsQueryDataRequest) RequestBody() *GetReportsQueryDataRequestBody {
@@ -116,43 +159,20 @@ type GetReportsQueryDataResponseBody struct {
 	Total   Int    `json:"total"`
 	Message string `json:"message"`
 	Data    []struct {
-		PropertyID                     Int         `json:"propertyID"`
-		ReservationID                  string      `json:"reservationID"`
-		SubReservationID               string      `json:"subReservationID"`
-		HouseAccountID                 interface{} `json:"houseAccountID"`
-		HouseAccountName               string      `json:"houseAccountName"`
-		GuestID                        string      `json:"guestID"`
-		PropertyName                   string      `json:"propertyName"`
-		TransactionDateTime            DateTime    `json:"transactionDateTime"`
-		TransactionDateTimeUTC         DateTime    `json:"transactionDateTimeUTC"`
-		TransactionModifiedDateTime    DateTime    `json:"transactionModifiedDateTime"`
-		TransactionModifiedDateTimeUTC DateTime    `json:"transactionModifiedDateTimeUTC"`
-		GuestCheckin                   Date        `json:"guestCheckin"`
-		GuestCheckout                  Date        `json:"guestCheckout"`
-		RoomTypeID                     string      `json:"roomTypeID"`
-		RoomTypeName                   string      `json:"roomTypeName"`
-		RoomName                       string      `json:"roomName"`
-		GuestName                      string      `json:"guestName"`
-		Description                    string      `json:"description"`
-		Category                       string      `json:"category"`
-		TransactionCode                string      `json:"transactionCode"`
-		Notes                          string      `json:"notes"`
-		Quantity                       Int         `json:"quantity"`
-		Currency                       string      `json:"currency"`
-		Username                       string      `json:"userName"`
-		TransactionType                string      `json:"transactionType"`
-		TransactionCategory            string      `json:"transactionCategory"`
-		ItemCategoryName               string      `json:"itemCategoryName"`
-		TransactionID                  string      `json:"transactionID"`
-		ParentTransactionID            string      `json:"parentTransactionID"`
-		CardType                       string      `json:"cardType"`
-		IsDeleted                      bool        `json:"isDeleted"`
-		Amount                         float64     `json:"amount"`
-	} `json:"data"`
+		GroupRows       string `json:"group_rows"`
+		GroupColumns    string `json:"group_columns"`
+		Periods         string `json:"periods"`
+		Records         string `json:"records"`
+		Subtotals       string `json:"subtotals"`
+		Totals          string `json:"totals"`
+		Type            string `json:"type"`
+		Comparisons     string `json:"comparisons"`
+		AggregatedCount int    `json:"aggregated_count"`
+	}
 }
 
 func (r *GetReportsQueryDataRequest) URL() url.URL {
-	return r.client.GetEndpointURL("getTransactions", r.PathParams())
+	return r.client.GetEndpointURL("datainsights/v1.1/reports/query/data", r.PathParams())
 }
 
 func (r *GetReportsQueryDataRequest) Do() (GetReportsQueryDataResponseBody, error) {
@@ -161,7 +181,6 @@ func (r *GetReportsQueryDataRequest) Do() (GetReportsQueryDataResponseBody, erro
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}
-
 	// Process query parameters
 	err = AddQueryParamsToRequest(r.QueryParams(), req, false)
 	if err != nil {
@@ -171,34 +190,4 @@ func (r *GetReportsQueryDataRequest) Do() (GetReportsQueryDataResponseBody, erro
 	responseBody := r.NewResponseBody()
 	_, err = r.client.Do(req, responseBody)
 	return *responseBody, err
-}
-
-func (r *GetReportsQueryDataRequest) All() (GetReportsQueryDataResponseBody, error) {
-	r.QueryParams().PageNumber = 1
-	resp, err := r.Do()
-	if err != nil {
-		return resp, err
-	}
-
-	concat := GetReportsQueryDataResponseBody{
-		Count:   resp.Count,
-		Total:   resp.Total,
-		Success: true,
-		Message: "",
-		Data:    resp.Data,
-	}
-
-	for concat.Count < concat.Total {
-		r.QueryParams().PageNumber = r.QueryParams().PageNumber + 1
-		resp, err := r.Do()
-		if err != nil {
-			return resp, err
-		}
-
-		concat.Count = concat.Count + resp.Count
-		concat.Total = resp.Total
-		concat.Data = append(concat.Data, resp.Data...)
-	}
-
-	return concat, nil
 }

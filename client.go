@@ -13,6 +13,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"path"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -28,13 +29,12 @@ const (
 var (
 	BaseURL = url.URL{
 		Scheme: "https",
-		Host:   "hotels.cloudbeds.com",
-		Path:   "api/v1.1",
+		Host:   "api.cloudbeds.com",
+		Path:   "",
 	}
 	requestTimestamps = []time.Time{}
 )
 
-// NewClient returns a new InvoiceXpress Client client
 func NewClient(httpClient *http.Client) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
@@ -53,26 +53,22 @@ func NewClient(httpClient *http.Client) *Client {
 	return client
 }
 
-// Client manages communication with InvoiceXpress Client
 type Client struct {
-	// HTTP client used to communicate with the Client.
 	http *http.Client
 
 	debug   bool
 	baseURL url.URL
 
-	// User agent for client
 	userAgent string
 
 	mediaType             string
 	charset               string
+	xpropertyID           int
 	disallowUnknownFields bool
 
-	// Optional function called after every successful request made to the DO Clients
 	onRequestCompleted RequestCompletionCallback
 }
 
-// RequestCompletionCallback defines the type of the request callback function
 type RequestCompletionCallback func(*http.Request, *http.Response)
 
 func (c *Client) Debug() bool {
@@ -113,6 +109,14 @@ func (c *Client) SetUserAgent(userAgent string) {
 
 func (c *Client) UserAgent() string {
 	return userAgent
+}
+
+func (c *Client) XpropertyID() int {
+	return c.xpropertyID
+}
+
+func (c *Client) SetXpropertyID(xpropertyID int) {
+	c.xpropertyID = xpropertyID
 }
 
 func (c *Client) SetDisallowUnknownFields(disallowUnknownFields bool) {
@@ -178,6 +182,7 @@ func (c *Client) NewRequest(ctx context.Context, method string, URL url.URL, bod
 	req.Header.Add("Content-Type", fmt.Sprintf("%s; charset=%s", c.MediaType(), c.Charset()))
 	req.Header.Add("Accept", c.MediaType())
 	req.Header.Add("User-Agent", c.UserAgent())
+	req.Header.Add("X-PROPERTY-ID", strconv.Itoa(c.xpropertyID))
 
 	return req, nil
 }

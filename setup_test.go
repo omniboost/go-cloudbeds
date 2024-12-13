@@ -32,5 +32,6 @@ func client() *cloudbeds.Client {
 	client := cloudbeds.NewClient(httpClient)
 	client.SetDebug(true)
 	client.SetDisallowUnknownFields(true)
+	client.SetXpropertyID(316633)
 	return client
 }

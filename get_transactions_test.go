@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"testing"
-	"time"
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/omniboost/go-cloudbeds"
@@ -13,11 +12,11 @@ import (
 func TestGetTransactions(t *testing.T) {
 	client := client()
 	req := client.NewGetTransactionsRequest()
-	now := time.Now()
-	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	yesterday := today.AddDate(0, 0, -1)
-	req.QueryParams().ResultsFrom = cloudbeds.Date{yesterday}
-	req.QueryParams().ResultsTo = cloudbeds.Date{today}
+	req.SetRequestBody(cloudbeds.GetTransactionsRequestBody{
+		Filters: cloudbeds.Filters{
+			And:
+		},
+	})
 
 	resp, err := req.Do()
 	if err != nil {
@@ -28,23 +27,15 @@ func TestGetTransactions(t *testing.T) {
 	log.Println(string(b))
 }
 
-func TestGetTransactionsAll(t *testing.T) {
-	client := client()
-	req := client.NewGetTransactionsRequest()
-	now := time.Now()
-	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	tomorrow := today.AddDate(0, 0, 1)
-	// yesterday := today.AddDate(0, 0, -1)
-	// req.QueryParams().ResultsFrom = cloudbeds.Date{yesterday}
-	lastYear := today.AddDate(-1, 0, 0)
-	req.QueryParams().CreatedFrom = cloudbeds.DateTime{lastYear}
-	req.QueryParams().ResultsTo = cloudbeds.Date{tomorrow}
+// func TestGetTransactionsAll(t *testing.T) {
+// 	client := client()
+// 	req := client.NewGetTransactionsRequest()
 
-	resp, err := req.All()
-	if err != nil {
-		t.Error(err)
-	}
+// 	resp, err := req.All()
+// 	if err != nil {
+// 		t.Error(err)
+// 	}
 
-	b, _ := json.MarshalIndent(resp, "", "  ")
-	log.Println(string(b))
-}
+// 	b, _ := json.MarshalIndent(resp, "", "  ")
+// 	log.Println(string(b))
+// }

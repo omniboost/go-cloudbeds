@@ -1,6 +1,6 @@
 module github.com/omniboost/go-cloudbeds
 
-go 1.14
+go 1.23
 
 require (
 	github.com/gorilla/schema v1.1.0
