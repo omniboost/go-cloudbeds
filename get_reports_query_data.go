@@ -30,6 +30,8 @@ func (c *Client) NewGetReportsQueryDataQueryParams() *GetReportsQueryDataQueryPa
 }
 
 type GetReportsQueryDataQueryParams struct {
+	Format string `schema:"format,omitempty"`
+	Mode   string `schema:"mode"`
 }
 
 func (p GetReportsQueryDataQueryParams) ToURLValues() (url.Values, error) {
@@ -76,69 +78,40 @@ func (s *Client) NewGetReportsQueryDataRequestBody() GetReportsQueryDataRequestB
 }
 
 type GetReportsQueryDataRequestBody struct {
-	PropertyIds []int `json:"property_ids,omitempty"`
-	DatasetID   int   `json:"dataset_id,omitempty"`
+	PropertyIds  []string          `json:"property_ids"`
+	DatasetID    int               `json:"dataset_id"`
+	Columns      []QueryDataColumn `json:"columns"`
+	GroupRows    interface{}       `json:"group_rows"`
+	GroupColumns interface{}       `json:"group_columns"`
+	CustomCdfs   interface{}       `json:"custom_cdfs"`
+	Filters      []QueryDataAnd    `json:"filters"`
+	Sort         interface{}       `json:"sort"`
+	Settings     struct {
+		Details   bool `json:"details"`
+		Totals    bool `json:"totals"`
+		Transpose bool `json:"transpose"`
+	} `json:"settings"`
+	Periods         interface{}   `json:"periods"`
+	Comparisons     interface{}   `json:"comparisons"`
+	Formats         interface{}   `json:"formats"`
+	CustomFieldCdfs []interface{} `json:"custom_field_cdfs"`
+}
 
-	Columns []struct {
-		Cdf struct {
-			Type   string `json:"type,omitempty"`
-			Column string `json:"column,omitempty"`
-		} `json:"cdf,omitempty"`
+type QueryDataCDF struct {
+	Type         string `json:"type"`
+	Column       string `json:"column"`
+	MultiLevelID int    `json:"multi_level_id,omitempty"`
+}
 
-		Metrics []string `json:"metrics,omitempty"`
-	} `json:"columns,omitempty"`
+type QueryDataColumn struct {
+	Cdf     QueryDataCDF `json:"cdf,omitempty"`
+	Metrics []string     `json:"metrics,omitempty"`
+}
 
-	GroupRows    string `json:"group_rows,omitempty"`
-	GroupColumns string `json:"group_columns,omitempty"`
-	CustomCdfs   string `json:"custom_cdfs,omitempty"`
-
-	Filters struct {
-		And []struct {
-			Cdf struct {
-				Type   string `json:"type,omitempty"`
-				Column string `json:"column,omitempty"`
-			} `json:"cdf,omitempty"`
-
-			Operator string `json:"operator,omitempty"`
-			Value    string `json:"value,omitempty"`
-
-			Or []struct {
-				Cdf struct {
-					Type   string `json:"type,omitempty"`
-					Column string `json:"column,omitempty"`
-				} `json:"cdf,omitempty"`
-
-				Operator string `json:"operator,omitempty"`
-				Value    string `json:"value,omitempty"`
-			} `json:"or,omitempty"`
-		} `json:"and,omitempty"`
-	} `json:"filters,omitempty"`
-
-	Sort string `json:"sort,omitempty"`
-
-	Settings struct {
-		Details   bool `json:"details,omitempty"`
-		Totals    bool `json:"totals,omitempty"`
-		Transpose bool `json:"transpose,omitempty"`
-	} `json:"settings,omitempty"`
-
-	Periods string `json:"periods,omitempty"`
-
-	Formats struct {
-		Date string `json:"date,omitempty"`
-		Link bool   `json:"link,omitempty"`
-	} `json:"formats,omitempty"`
-
-	Comparisons string `json:"comparisons,omitempty"`
-
-	CustomFieldCdfs []struct {
-		Name string `json:"name,omitempty"`
-
-		Properties []struct {
-			InternalName string `json:"internal_name,omitempty"`
-			PropertyID   int    `json:"property_id,omitempty"`
-		} `json:"properties,omitempty"`
-	} `json:"custom_field_cdfs,omitempty"`
+type QueryDataAnd struct {
+	CDF      QueryDataCDF `json:"cdf"`
+	Operator string       `json:"operator"`
+	Value    string       `json:"value"`
 }
 
 func (r *GetReportsQueryDataRequest) RequestBody() *GetReportsQueryDataRequestBody {
@@ -154,21 +127,17 @@ func (r *GetReportsQueryDataRequest) NewResponseBody() *GetReportsQueryDataRespo
 }
 
 type GetReportsQueryDataResponseBody struct {
-	Success bool   `json:"success"`
-	Count   Int    `json:"count"`
-	Total   Int    `json:"total"`
-	Message string `json:"message"`
-	Data    []struct {
-		GroupRows       string `json:"group_rows"`
-		GroupColumns    string `json:"group_columns"`
-		Periods         string `json:"periods"`
-		Records         string `json:"records"`
-		Subtotals       string `json:"subtotals"`
-		Totals          string `json:"totals"`
-		Type            string `json:"type"`
-		Comparisons     string `json:"comparisons"`
-		AggregatedCount int    `json:"aggregated_count"`
-	}
+	Headers         []string         `json:"headers"`
+	Index           [][]string       `json:"index"`
+	GroupRows       []string         `json:"group_rows"`
+	GroupColumns    []string         `json:"group_columns"`
+	Periods         []string         `json:"periods"`
+	Records         map[string][]any `json:"records"`
+	Subtotals       any              `json:"subtotals"`
+	Totals          any              `json:"totals"`
+	Type            string           `json:"type"`
+	Comparisons     []string         `json:"comparisons"`
+	AggregatedCount int              `json:"aggregated_count"`
 }
 
 func (r *GetReportsQueryDataRequest) URL() url.URL {

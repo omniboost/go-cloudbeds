@@ -23,3 +23,24 @@ var (
 // "checked_in",
 // "checked_out",
 // "no_show"
+
+type Filters struct {
+	And []And `json:"and,omitempty"`
+	Or  []Or  `json:"or,omitempty"`
+}
+type Sort struct {
+	Field     string `json:"field,omitempty"`
+	Direction string `json:"direction,omitempty"`
+}
+
+type And struct {
+	Operator string `json:"operator"`
+	Value    string `json:"value"`
+	Field    string `json:"field"`
+}
+
+type Or struct {
+	Operator string `json:"operator"`
+	Value    string `json:"value"`
+	Field    string `json:"field"`
+}

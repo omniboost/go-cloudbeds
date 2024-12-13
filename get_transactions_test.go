@@ -14,7 +14,18 @@ func TestGetTransactions(t *testing.T) {
 	req := client.NewGetTransactionsRequest()
 	req.SetRequestBody(cloudbeds.GetTransactionsRequestBody{
 		Filters: cloudbeds.Filters{
-			And:
+			And: []cloudbeds.And{
+				{
+					Operator: "greater_than_or_equal",
+					Value:    "2024-10-01T03:00:00",
+					Field:    "TRANSACTION_DATETIME",
+				},
+				{
+					Operator: "less_than_or_equal",
+					Value:    "2024-12-12T03:00:00",
+					Field:    "TRANSACTION_DATETIME",
+				},
+			},
 		},
 	})
 
@@ -27,15 +38,32 @@ func TestGetTransactions(t *testing.T) {
 	log.Println(string(b))
 }
 
-// func TestGetTransactionsAll(t *testing.T) {
-// 	client := client()
-// 	req := client.NewGetTransactionsRequest()
+func TestGetTransactionsAll(t *testing.T) {
+	client := client()
+	req := client.NewGetTransactionsRequest()
+	req.SetRequestBody(cloudbeds.GetTransactionsRequestBody{
+		Filters: cloudbeds.Filters{
+			And: []cloudbeds.And{
+				{
+					Operator: "greater_than_or_equal",
+					Value:    "2024-10-01T03:00:00",
+					Field:    "TRANSACTION_DATETIME",
+				},
+				{
+					Operator: "less_than_or_equal",
+					Value:    "2024-12-12T03:00:00",
+					Field:    "TRANSACTION_DATETIME",
+				},
+			},
+		},
+		Limit: 10,
+	})
 
-// 	resp, err := req.All()
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
+	resp, err := req.All()
+	if err != nil {
+		t.Error(err)
+	}
 
-// 	b, _ := json.MarshalIndent(resp, "", "  ")
-// 	log.Println(string(b))
-// }
+	b, _ := json.MarshalIndent(resp, "", "  ")
+	log.Println(string(b))
+}

@@ -1,7 +1,9 @@
 package cloudbeds_test
 
 import (
+	"log"
 	"os"
+	"strconv"
 
 	"github.com/omniboost/go-cloudbeds"
 	"golang.org/x/oauth2"
@@ -12,6 +14,10 @@ func client() *cloudbeds.Client {
 	clientSecret := os.Getenv("OAUTH_CLIENT_SECRET")
 	refreshToken := os.Getenv("OAUTH_REFRESH_TOKEN")
 	tokenURL := os.Getenv("OAUTH_TOKEN_URL")
+	propertyID, err := strconv.Atoi(os.Getenv("PROPERTY_ID"))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	oauthConfig := cloudbeds.NewOauth2Config()
 	oauthConfig.ClientID = clientID
@@ -32,6 +38,6 @@ func client() *cloudbeds.Client {
 	client := cloudbeds.NewClient(httpClient)
 	client.SetDebug(true)
 	client.SetDisallowUnknownFields(true)
-	client.SetXpropertyID(316633)
+	client.SetPropertyID(propertyID)
 	return client
 }

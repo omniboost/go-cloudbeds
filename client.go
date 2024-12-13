@@ -63,7 +63,7 @@ type Client struct {
 
 	mediaType             string
 	charset               string
-	xpropertyID           int
+	propertyID            int
 	disallowUnknownFields bool
 
 	onRequestCompleted RequestCompletionCallback
@@ -111,12 +111,12 @@ func (c *Client) UserAgent() string {
 	return userAgent
 }
 
-func (c *Client) XpropertyID() int {
-	return c.xpropertyID
+func (c *Client) PropertyID() int {
+	return c.propertyID
 }
 
-func (c *Client) SetXpropertyID(xpropertyID int) {
-	c.xpropertyID = xpropertyID
+func (c *Client) SetPropertyID(propertyID int) {
+	c.propertyID = propertyID
 }
 
 func (c *Client) SetDisallowUnknownFields(disallowUnknownFields bool) {
@@ -182,7 +182,7 @@ func (c *Client) NewRequest(ctx context.Context, method string, URL url.URL, bod
 	req.Header.Add("Content-Type", fmt.Sprintf("%s; charset=%s", c.MediaType(), c.Charset()))
 	req.Header.Add("Accept", c.MediaType())
 	req.Header.Add("User-Agent", c.UserAgent())
-	req.Header.Add("X-PROPERTY-ID", strconv.Itoa(c.xpropertyID))
+	req.Header.Add("X-PROPERTY-ID", strconv.Itoa(c.propertyID))
 
 	return req, nil
 }
@@ -243,9 +243,19 @@ func (c *Client) Do(req *http.Request, responseBody interface{}) (*http.Response
 	}
 
 	errorResponse := &ErrorResponse{Response: httpResp}
-	err = c.Unmarshal(httpResp.Body, &responseBody, &errorResponse)
+	apiError := APIError{Response: httpResp}
+	datainsightsError := DataInsightsError{Response: httpResp}
+	err = c.Unmarshal(httpResp.Body, &responseBody, &apiError, &datainsightsError, &errorResponse)
 	if err != nil {
 		return httpResp, err
+	}
+
+	if apiError.Error() != "" {
+		return httpResp, apiError
+	}
+
+	if datainsightsError.Error() != "" {
+		return httpResp, datainsightsError
 	}
 
 	if len(errorResponse.Messages) > 0 {
@@ -415,14 +425,52 @@ func (msgs Messages) Error() string {
 	return strings.Join(err, ", ")
 }
 
-func (r *ErrorResponse) Error() string {
-	return r.Messages.Error()
-}
-
 type Message struct {
 	MessageCode string `json:"message_code"`
 	MessageType string `json:"message_type"`
 	Message     string `json:"message"`
+}
+
+func (r *ErrorResponse) Error() string {
+	return r.Messages.Error()
+}
+
+type APIError struct {
+	// HTTP response that caused this error
+	Response *http.Response `json:"-"`
+
+	ID           string    `json:"id"`
+	Timestamp    time.Time `json:"timestamp"`
+	ErrorCode    string    `json:"errorCode"`
+	ErrorDetails string    `json:"errorDetails"`
+}
+
+func (a APIError) Error() string {
+	if a.ErrorCode != "" && a.ErrorDetails != "" {
+		return fmt.Sprintf("%s: %s", a.ErrorCode, a.ErrorDetails)
+	}
+	return ""
+}
+
+type DataInsightsError struct {
+	// HTTP response that caused this error
+	Response *http.Response `json:"-"`
+
+	Err struct {
+		Code        int            `json:"code"`
+		Status      string         `json:"status"`
+		Description string         `json:"description"`
+		Message     map[string]any `json:"message"`
+	} `json:"error"`
+}
+
+func (e DataInsightsError) Error() string {
+	if e.Err.Code == 0 {
+		return ""
+	}
+
+	b, _ := json.MarshalIndent(e, "", "  ")
+	return string(b)
 }
 
 func checkContentType(response *http.Response) error {
