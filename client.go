@@ -220,12 +220,6 @@ func (c *Client) Do(req *http.Request, responseBody interface{}) (*http.Response
 		log.Println(string(dump))
 	}
 
-	// check if the response isn't an error
-	err = CheckResponse(httpResp)
-	if err != nil {
-		return httpResp, err
-	}
-
 	// check the provided interface parameter
 	if httpResp == nil {
 		return httpResp, nil
@@ -244,8 +238,9 @@ func (c *Client) Do(req *http.Request, responseBody interface{}) (*http.Response
 
 	errorResponse := &ErrorResponse{Response: httpResp}
 	apiError := APIError{Response: httpResp}
+	apiError2 := APIError2{Response: httpResp}
 	datainsightsError := DataInsightsError{Response: httpResp}
-	err = c.Unmarshal(httpResp.Body, &responseBody, &apiError, &datainsightsError, &errorResponse)
+	err = c.Unmarshal(httpResp.Body, &responseBody, &apiError, &apiError2, &datainsightsError, &errorResponse)
 	if err != nil {
 		return httpResp, err
 	}
@@ -254,12 +249,22 @@ func (c *Client) Do(req *http.Request, responseBody interface{}) (*http.Response
 		return httpResp, apiError
 	}
 
+	if apiError2.Error() != "" {
+		return httpResp, apiError2
+	}
+
 	if datainsightsError.Error() != "" {
 		return httpResp, datainsightsError
 	}
 
 	if len(errorResponse.Messages) > 0 {
 		return httpResp, errorResponse
+	}
+
+	// check if the response isn't an error
+	err = CheckResponse(httpResp)
+	if err != nil {
+		return httpResp, err
 	}
 
 	return httpResp, nil
@@ -294,7 +299,7 @@ func (c *Client) Unmarshal(r io.Reader, vv ...interface{}) error {
 			wg.Done()
 
 			// Drain reader
-			io.Copy(ioutil.Discard, pr)
+			io.Copy(io.Discard, pr)
 
 			// close reader
 			// pr.CloseWithError(err)
@@ -448,6 +453,29 @@ type APIError struct {
 func (a APIError) Error() string {
 	if a.ErrorCode != "" && a.ErrorDetails != "" {
 		return fmt.Sprintf("%s: %s", a.ErrorCode, a.ErrorDetails)
+	}
+	return ""
+}
+
+//	{
+//	  "id": null,
+//	  "timestamp": "2024-12-27T12:31:53.318020618",
+//	  "code": "ACCESS_DENIED",
+//	  "description": "Access denied"
+//	}
+type APIError2 struct {
+	// HTTP response that caused this error
+	Response *http.Response `json:"-"`
+
+	ID          string `json:"id"`
+	Timestamp   string `json:"timestamp"`
+	Code        string `json:"code"`
+	Description string `json:"description"`
+}
+
+func (a APIError2) Error() string {
+	if a.Code != "" && a.Description != "" {
+		return fmt.Sprintf("%s: %s", a.Code, a.Description)
 	}
 	return ""
 }
