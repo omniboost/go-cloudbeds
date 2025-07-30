@@ -84,7 +84,7 @@ type GetReportsQueryDataRequestBody struct {
 	GroupRows    interface{}       `json:"group_rows"`
 	GroupColumns interface{}       `json:"group_columns"`
 	CustomCdfs   interface{}       `json:"custom_cdfs"`
-	Filters      []QueryDataAnd    `json:"filters"`
+	Filters      QueryDataFilters  `json:"filters"`
 	Sort         interface{}       `json:"sort"`
 	Settings     struct {
 		Details   bool `json:"details"`
@@ -106,6 +106,11 @@ type QueryDataCDF struct {
 type QueryDataColumn struct {
 	Cdf     QueryDataCDF `json:"cdf,omitempty"`
 	Metrics []string     `json:"metrics,omitempty"`
+}
+
+type QueryDataFilters struct {
+	And []QueryDataAnd `json:"and,omitempty"`
+	Or  []QueryDataAnd `json:"or,omitempty"`
 }
 
 type QueryDataAnd struct {
