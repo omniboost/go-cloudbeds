@@ -44,3 +44,15 @@ type Or struct {
 	Value    string `json:"value"`
 	Field    string `json:"field"`
 }
+
+type CustomTransactionCode struct {
+	ID                        string `json:"id"`
+	Version                   int    `json:"version"`
+	Name                      string `json:"name"`
+	Code                      string `json:"code"`
+	SKU                       string `json:"sku"`
+	ItemGroup                 string `json:"itemGroup"`
+	CustomGeneralLedgerCodeID string `json:"customGeneralLedgerCodeId"`
+}
+
+type CustomTransactionCodes []CustomTransactionCode
