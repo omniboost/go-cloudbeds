@@ -56,3 +56,12 @@ type CustomTransactionCode struct {
 }
 
 type CustomTransactionCodes []CustomTransactionCode
+
+type InternalTransactionCode struct {
+	ID          int    `json:"id"`
+	Code        string `json:"code"`
+	Description string `json:"description"`
+	Group       string `json:"group"`
+}
+
+type InternalTransactionCodes []InternalTransactionCode
