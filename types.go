@@ -53,6 +53,11 @@ type CustomTransactionCode struct {
 	SKU                       string `json:"sku"`
 	ItemGroup                 string `json:"itemGroup"`
 	CustomGeneralLedgerCodeID string `json:"customGeneralLedgerCodeId"`
+	ItemID                    string `json:"itemId"`
+	PosItemID                 string `json:"posItemId"`
+	TaxID                     string `json:"taxId"`
+	FeeID                     string `json:"feeId"`
+	PaymentID                 string `json:"paymentId"`
 }
 
 type CustomTransactionCodes []CustomTransactionCode
