@@ -240,7 +240,8 @@ func (c *Client) Do(req *http.Request, responseBody interface{}) (*http.Response
 	apiError := APIError{Response: httpResp}
 	apiError2 := APIError2{Response: httpResp}
 	datainsightsError := DataInsightsError{Response: httpResp}
-	err = c.Unmarshal(httpResp.Body, &responseBody, &apiError, &apiError2, &datainsightsError, &errorResponse)
+	messageError := &MessageErrorResponse{Response: httpResp}
+	err = c.Unmarshal(httpResp.Body, &responseBody, &apiError, &apiError2, &datainsightsError, &messageError, &errorResponse)
 	if err != nil {
 		return httpResp, err
 	}
@@ -255,6 +256,10 @@ func (c *Client) Do(req *http.Request, responseBody interface{}) (*http.Response
 
 	if datainsightsError.Error() != "" {
 		return httpResp, datainsightsError
+	}
+
+	if messageError.Error() != "" {
+		return httpResp, messageError
 	}
 
 	if len(errorResponse.Messages) > 0 {
@@ -403,6 +408,10 @@ type ErrorResponse struct {
 	Messages Messages
 }
 
+func (r *ErrorResponse) Error() string {
+	return r.Messages.Error()
+}
+
 func (r *ErrorResponse) UnmarshalJSON(data []byte) error {
 	msgs := Messages{}
 	err := json.Unmarshal(data, &msgs)
@@ -436,8 +445,19 @@ type Message struct {
 	Message     string `json:"message"`
 }
 
-func (r *ErrorResponse) Error() string {
-	return r.Messages.Error()
+type MessageErrorResponse struct {
+	// HTTP response that caused this error
+	Response *http.Response `json:"-"`
+
+	Message string
+}
+
+func (r *MessageErrorResponse) Error() string {
+	if r.Message != "" {
+		return r.Message
+	}
+
+	return ""
 }
 
 type APIError struct {
