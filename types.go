@@ -70,3 +70,16 @@ type InternalTransactionCode struct {
 }
 
 type InternalTransactionCodes []InternalTransactionCode
+
+type Addon struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	ProductID   string `json:"productId"`
+	Price       struct {
+		Amount       Int    `json:"amount"`
+		CurrencyCode string `json:"currencyCode"`
+	} `json:"price"`
+}
+
+type Addons []Addon
