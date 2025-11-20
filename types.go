@@ -1,5 +1,7 @@
 package cloudbeds
 
+import "github.com/cydev/zero"
+
 type Status string
 type TransactionFilter string
 
@@ -83,3 +85,26 @@ type Addon struct {
 }
 
 type Addons []Addon
+
+type Account struct {
+	// ID of account
+	ID                 string `json:"id"`
+	// Description of the account
+	Description        string `json:"description"`
+	// Name of the account
+	Name               string `json:"name"`
+	// Account category
+	// - DEPOSITS
+	Category           string `json:"category"`
+	// Chart of account type
+	// - LIABILITIES
+	// - REVENUE
+	// - ASSETS
+	// - EQUITY
+	// - EXPENSES
+	ChartOfAccountType string `json:"chartOfAccountType"`
+}
+
+func (a Account) IsZero() bool {
+	return zero.IsZero(a)
+}
