@@ -37,6 +37,16 @@ const SOURCE_KIND_ACCOUNTS_RECEIVABLE_LEDGER = "ACCOUNTS_RECEIVABLE_LEDGER"
 type GetFiscalDocumentsQueryParams struct {
 	PageToken string `schema:"pageToken,omitempty"`
 	Limit     int    `schema:"limit,omitempty"`
+	// 1 to 100
+	// Defaults to 20
+	Sort string `schema:"sort,omitempty"`
+	// Supported fields:
+	// createdAt
+	// dueDate
+	// invoiceDate
+	// kind
+	// status
+	// Supported sort modes asc:desc. If not supplied default is asc.
 
 	IDs []string `schema:"ids,omitempty"`
 	// List of IDs to filter by

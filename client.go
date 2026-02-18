@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"text/template"
 	"time"
 )
 
@@ -141,18 +142,18 @@ func (c *Client) GetEndpointURL(relative string, pathParams PathParams) url.URL 
 	}
 	clientURL.RawQuery = query.Encode()
 
-	// tmpl, err := template.New("endpoint_url").Parse(clientURL.Path)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	tmpl, err := template.New("endpoint_url").Parse(clientURL.Path)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// buf := new(bytes.Buffer)
-	// params := pathParams.Params()
-	// err = tmpl.Execute(buf, params)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// clientURL.Path = buf.String()
+	buf := new(bytes.Buffer)
+	params := pathParams.Params()
+	err = tmpl.Execute(buf, params)
+	if err != nil {
+		log.Fatal(err)
+	}
+	clientURL.Path = buf.String()
 
 	return clientURL
 }
