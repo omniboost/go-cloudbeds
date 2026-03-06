@@ -13,6 +13,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"path"
+	"reflect"
 	"strconv"
 	"strings"
 	"sync"
@@ -183,7 +184,10 @@ func (c *Client) NewRequest(ctx context.Context, method string, URL url.URL, bod
 	req.Header.Add("Content-Type", fmt.Sprintf("%s; charset=%s", c.MediaType(), c.Charset()))
 	req.Header.Add("Accept", c.MediaType())
 	req.Header.Add("User-Agent", c.UserAgent())
-	req.Header.Add("X-PROPERTY-ID", strconv.Itoa(c.propertyID))
+	// if the X-PROPERTY-ID header is set, don't overwrite it
+	if req.Header.Values("X-PROPERTY-ID") == nil {
+		req.Header.Add("X-PROPERTY-ID", strconv.Itoa(c.propertyID))
+	}
 
 	return req, nil
 }
@@ -298,7 +302,7 @@ func (c *Client) Unmarshal(r io.Reader, vv ...interface{}) error {
 
 			err := dec.Decode(v)
 			if err != nil {
-				errs = append(errs, err)
+				errs = append(errs, errors.New(fmt.Sprintf("Error decoding response into %s: %s", reflect.TypeOf(v), err.Error())))
 			}
 
 			// mark routine as done

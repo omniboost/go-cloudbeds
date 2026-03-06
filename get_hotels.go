@@ -97,6 +97,7 @@ type GetHotelsResponseBody struct {
 	Message string `json:"message"`
 	Data    []struct {
 		PropertyID          string `json:"propertyID"`
+		OrganizationID      string `json:"organizationID"`
 		PropertyName        string `json:"propertyName"`
 		PropertyImage       string `json:"propertyImage"`
 		PropertyDescription string `json:"propertyDescription"`
@@ -110,7 +111,7 @@ type GetHotelsResponseBody struct {
 }
 
 func (r *GetHotelsRequest) URL() url.URL {
-	return r.client.GetEndpointURL("getHotels", r.PathParams())
+	return r.client.GetEndpointURL("/api/v1.3/getHotels", r.PathParams())
 }
 
 func (r *GetHotelsRequest) Do() (GetHotelsResponseBody, error) {

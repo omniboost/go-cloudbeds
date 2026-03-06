@@ -1,6 +1,13 @@
 package cloudbeds
 
-import "github.com/cydev/zero"
+import (
+	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
+
+	"github.com/cydev/zero"
+)
 
 type Status string
 type TransactionFilter string
@@ -88,14 +95,14 @@ type Addons []Addon
 
 type Account struct {
 	// ID of account
-	ID                 string `json:"id"`
+	ID string `json:"id"`
 	// Description of the account
-	Description        string `json:"description"`
+	Description string `json:"description"`
 	// Name of the account
-	Name               string `json:"name"`
+	Name string `json:"name"`
 	// Account category
 	// - DEPOSITS
-	Category           string `json:"category"`
+	Category string `json:"category"`
 	// Chart of account type
 	// - LIABILITIES
 	// - REVENUE
@@ -108,3 +115,182 @@ type Account struct {
 func (a Account) IsZero() bool {
 	return zero.IsZero(a)
 }
+
+type Rooms []Room
+
+type Room struct {
+	ReservationRoomID string `json:"reservationRoomID"`
+	RoomTypeID        string `json:"roomTypeID"`
+	RoomTypeName      string `json:"roomTypeName"` // Room Type Name where guest is assigned
+	RoomTypeIsVirtual bool   `json:"roomTypeIsVirtual"`
+	RoomID            string `json:"roomID"`           // Room ID where guest is assigned
+	RoomName          string `json:"roomName"`         // Room Name where guest is assigned
+	SubReservationID  string `json:"subReservationID"` // Sub Reservation ID where guest is assigned
+}
+
+type AssignedRooms []AssignedRoom
+
+type AssignedRoom struct {
+	ReservationRoomID string `json:"reservationRoomID"`
+	RoomTypeID        string `json:"roomTypeID"`
+	RoomTypeName      string `json:"roomTypeName"` // Room Type Name where guest is assigned
+	RoomTypeIsVirtual bool   `json:"roomTypeIsVirtual"`
+	RoomID            string `json:"roomID"`            // Room ID where guest is assigned
+	RoomName          string `json:"roomName"`          // Room Name where guest is assigned
+	SubReservationID  string `json:"subReservationID"`  // Sub Reservation ID where guest is assigned
+	RoomTypeNameShort string `json:"roomTypeNameShort"` // Short name of the assigned room type
+	StartDate         Date   `json:"startDate"`
+	EndDate           Date   `json:"endDate"`
+	Adults            Int    `json:"adults"`
+	Children          Int    `json:"children"`
+	DailyRates        []struct {
+		Date Date    `json:"date"`
+		Rate float64 `json:"rate"`
+	} `json:"dailyRates"`
+	RoomTotal  StringFloat `json:"roomTotal"`
+	MarketName string      `json:"marketName"`
+	MarketCode string      `json:"marketCode"`
+}
+
+type GuestRequirements struct {
+}
+
+func (g GuestRequirements) IsZero() bool {
+	return zero.IsZero(g)
+}
+
+type HourMinute struct {
+	Hour   int `json:"hour"`
+	Minute int `json:"minute"`
+}
+
+func (h HourMinute) IsZero() bool {
+	return zero.IsZero(h)
+}
+
+func (h HourMinute) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + strconv.Itoa(h.Hour) + `:` + strconv.Itoa(h.Minute) + `"`), nil
+}
+
+func (h *HourMinute) UnmarshalJSON(data []byte) error {
+	var value string
+	err := json.Unmarshal(data, &value)
+	if err != nil {
+		return err
+	}
+
+	parts := strings.Split(value, ":")
+	if len(parts) != 2 {
+		return fmt.Errorf("invalid time format: %s", value)
+	}
+
+	hour, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return fmt.Errorf("invalid hour: %s", parts[0])
+	}
+
+	minute, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return fmt.Errorf("invalid minute: %s", parts[1])
+	}
+
+	h.Hour = hour
+	h.Minute = minute
+	return nil
+}
+
+type BalanceDetailed struct {
+	SuggestedDeposit StringFloat `json:"suggestedDeposit"`
+	SubTotal         float64     `json:"subTotal"`
+	AdditionalItems  int         `json:"additionalItems"`
+	TaxesFees        float64     `json:"taxesFees"`
+	GrandTotal       float64     `json:"grandTotal"`
+	Paid             float64     `json:"paid"`
+}
+
+type CardsOnFile []CardOnFile
+
+type CardOnFile struct {
+	CardID     string `json:"cardID"`
+	CardNumber string `json:"cardNumber"`
+	CardType   string `json:"cardType"`
+}
+
+type CustomFields []CustomField
+
+type CustomField struct {
+	CustomFieldName  string `json:"customFieldName"`  // Custom Field Name
+	CustomFieldValue string `json:"customFieldValue"` // Custom Field Value
+}
+
+// RecipientType represents the type of fiscal document recipient
+type RecipientType string
+
+const (
+	RecipientTypeCompany RecipientType = "COMPANY"
+	RecipientTypePerson  RecipientType = "PERSON"
+	RecipientTypeManual  RecipientType = "MANUAL"
+)
+
+// RecipientAddress represents the address of a recipient
+type RecipientAddress struct {
+	Address1 string `json:"address1,omitempty"` // Primary street address line
+	Address2 string `json:"address2,omitempty"` // Secondary street address line (e.g. apartment, suite)
+	City     string `json:"city,omitempty"`     // City name
+	State    string `json:"state,omitempty"`    // State or province
+	ZipCode  string `json:"zipCode,omitempty"`  // Postal or ZIP code
+	Country  string `json:"country,omitempty"`  // Country code
+}
+
+// RecipientCompany represents company information for a recipient
+type RecipientCompany struct {
+	Name      string `json:"name,omitempty"`      // Legal name of the company
+	TaxID     string `json:"taxId,omitempty"`     // Company tax identification number
+	TaxIDType string `json:"taxIdType,omitempty"` // Type/classification of the tax ID
+	Address1  string `json:"address1,omitempty"`  // Primary street address line
+	Address2  string `json:"address2,omitempty"`  // Secondary street address line (e.g. suite, floor)
+	City      string `json:"city,omitempty"`      // City name
+	State     string `json:"state,omitempty"`     // State or province
+	ZipCode   string `json:"zipCode,omitempty"`   // Postal or ZIP code
+	Country   string `json:"country,omitempty"`   // Country code
+}
+
+// RecipientTaxInfo represents tax information for a recipient
+type RecipientTaxInfo struct {
+	ID          string `json:"id,omitempty"`          // Tax identification number of the recipient
+	CompanyName string `json:"companyName,omitempty"` // Company name associated with the tax record
+}
+
+// RecipientContactDetails represents contact details for a recipient
+type RecipientContactDetails struct {
+	Phone     string `json:"phone,omitempty"`     // Primary phone number
+	Gender    string `json:"gender,omitempty"`    // Gender of the recipient
+	CellPhone string `json:"cellPhone,omitempty"` // Mobile/cell phone number
+	Birthday  string `json:"birthday,omitempty"`  // Date of birth in date-time format (RFC3339)
+}
+
+// RecipientDocument represents an identity document for a recipient
+type RecipientDocument struct {
+	Type           string `json:"type,omitempty"`           // Type of identity document (e.g. passport, national ID)
+	Number         string `json:"number,omitempty"`         // Document identification number
+	IssuingCountry string `json:"issuingCountry,omitempty"` // Country that issued the document
+	IssueDate      string `json:"issueDate,omitempty"`      // Date the document was issued in date-time format (RFC3339)
+	ExpirationDate string `json:"expirationDate,omitempty"` // Date the document expires in date-time format (RFC3339)
+}
+
+// FiscalDocumentRecipient represents a single recipient associated with a fiscal document
+type FiscalDocumentRecipient struct {
+	ID             string                   `json:"id,omitempty"`             // Unique identifier of the recipient
+	FirstName      string                   `json:"firstName,omitempty"`      // First name of the recipient
+	LastName       string                   `json:"lastName,omitempty"`       // Last name of the recipient
+	Email          string                   `json:"email,omitempty"`          // Email address of the recipient
+	Type           RecipientType            `json:"type,omitempty"`           // Recipient type: COMPANY, PERSON, or MANUAL
+	Address        *RecipientAddress        `json:"address,omitempty"`        // Physical address of the recipient
+	Company        *RecipientCompany        `json:"company,omitempty"`        // Company information, populated when Type is COMPANY
+	Tax            *RecipientTaxInfo        `json:"tax,omitempty"`            // Tax information associated with the recipient
+	ContactDetails *RecipientContactDetails `json:"contactDetails,omitempty"` // Additional contact details for the recipient
+	Document       *RecipientDocument       `json:"document,omitempty"`       // Identity document information for the recipient
+	CountryData    map[string]interface{}   `json:"countryData,omitempty"`    // Arbitrary country-specific fields from guest requirements
+}
+
+// GetFiscalDocumentRecipientsResponse is the top-level response body — an array of recipients as
