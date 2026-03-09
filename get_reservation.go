@@ -101,82 +101,11 @@ func (r *GetReservationRequest) NewResponseBody() *GetReservationResponseBody {
 }
 
 type GetReservationResponseBody struct {
-	Success bool   `json:"success"`
-	Count   int    `json:"count"`
-	Total   int    `json:"total"`
-	Message string `json:"message"`
-	Data    struct {
-		PropertyID           string          `json:"propertyID"`    // Properties identifier
-		ReservationID        string          `json:"reservationID"` // Reservation's unique identifier
-		DateCreated          DateTime        `json:"dateCreated"`
-		DateModified         DateTime        `json:"dateModified"`
-		EstimatedArrivalTime HourMinute      `json:"estimatedArrivalTime"`
-		Source               string          `json:"source"`
-		SourceID             string          `json:"sourceID"`
-		Status               Status          `json:"status"`
-		TotalRevenue         float64         `json:"totalRevenue"`
-		GuestID              Int             `json:"guestID"`
-		GuestName            string          `json:"guestName"`
-		GuestEmail           string          `json:"guestEmail"`
-		StartDate            Date            `json:"startDate"`
-		EndDate              Date            `json:"endDate"`
-		OrderID              string          `json:"orderID"`
-		Origin               string          `json:"origin"`
-		Cancellation         string          `json:"cancellation"`
-		AllotmentBlockCode   string          `json:"allotmentBlockCode"`
-		Adults               Int             `json:"adults"`
-		Children             Int             `json:"children"`
-		Total                float64         `json:"total"`
-		Balance              float64         `json:"balance"`
-		BalanceDetailed      BalanceDetailed `json:"balanceDetailed"`
-		Assigned             AssignedRooms   `json:"assigned"`
-		Unassigned           AssignedRooms   `json:"unassigned"`
-		CardsOnFile          CardsOnFile     `json:"cardsOnFile"`
-		CustomFields         CustomFields    `json:"customFields"`
-		SourceName           string          `json:"sourceName"` // Source of reservation
-		ThirdPartyIdentifier string          `json:"thirdPartyIdentifier"`
-		GuestList            map[string]struct {
-			GuestID string `json:"guestID"` // ID of the guest
-
-			GuestName                   string            `json:"guestName"`
-			GuestFirstName              string            `json:"guestFirstName"`
-			GuestLastName               string            `json:"guestLastName"`
-			Guestgender                 string            `json:"guestGender"` // Toegestane waarden: "M", "F", "N/A"
-			GuestEmail                  string            `json:"guestEmail"`
-			GuestPhone                  string            `json:"guestPhone"`
-			GuestCellPhone              string            `json:"guestCellPhone"`
-			GuestAddress                string            `json:"guestAddress"`
-			GuestAddress2               string            `json:"guestAddress2"`
-			GuestCity                   string            `json:"guestCity"`
-			GuestState                  string            `json:"guestState"`
-			GuestStatus                 string            `json:"guestStatus"` // Toegestane waarden: "active", "inactive"
-			GuestCountry                string            `json:"guestCountry"`
-			GuestZip                    string            `json:"guestZip"`
-			GuestBirthdate              Date              `json:"guestBirthdate"`
-			GuestDocumentType           string            `json:"guestDocumentType"`
-			GuestDocumentNumber         string            `json:"guestDocumentNumber"`
-			GuestDocumentIssueDate      Date              `json:"guestDocumentIssueDate"`
-			GuestDocumentIsseingCountry string            `json:"guestDocumentIssuingCountry"`
-			GuestDocumentExpirationDate Date              `json:"guestDocumentExpirationDate"`
-			TaxID                       string            `json:"taxID"`        //  Guest's tax ID
-			CompanyTaxID                string            `json:"companyTaxID"` // Guest's company tax ID
-			CompanyName                 string            `json:"companyName"`  // Guest's company name
-			SubReservationID            string            `json:"subReservationID"`
-			StartDate                   Date              `json:"startDate"`
-			EndDate                     Date              `json:"endDate"`
-			AssignedRoom                bool              `json:"assignedRoom"` // Returns true if guest has roomed assigned, false if not
-			RoomID                      string            `json:"roomID"`       // Room ID where guest is assigned
-			RoomName                    string            `json:"roomName"`     // Room Name where guest is assigned
-			RoomTypeName                string            `json:"roomTypeName"` // Room Name where guest is assigned
-			IsMainGuest                 bool              `json:"isMainGuest"`
-			UnassignedRooms             Rooms             `json:"unassignedRooms"` // List of all rooms that guest is assigned to but not yet checked in
-			Rooms                       Rooms             `json:"rooms"`           // List of all rooms that guest is assigned to
-			GuestRequirements           GuestRequirements `json:"guestRequirements,omitzero"`
-			CustomFields                CustomFields      `json:"customFields"`
-			IsAnonymized                bool              `json:"isAnonymized"` //  Flag indicating the guest data was removed upon request
-		} `json:"guestList"`
-		IsAnonymized bool `json:"isAnonymized"` //  Flag indicating the guest data was removed upon request
-	} `json:"data"`
+	Success bool        `json:"success"`
+	Count   int         `json:"count"`
+	Total   int         `json:"total"`
+	Message string      `json:"message"`
+	Data    Reservation `json:"data"`
 }
 
 func (r *GetReservationRequest) URL() url.URL {

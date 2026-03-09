@@ -31,21 +31,6 @@ func (c *Client) NewGetFiscalDocumentRecipientsQueryParams() *GetFiscalDocumentR
 }
 
 type GetFiscalDocumentRecipientsQueryParams struct {
-	PageToken string `schema:"pageToken,omitempty"`
-	Limit     int    `schema:"limit,omitempty"`
-	// 1 to 100
-	// Defaults to 20
-	Sort string `schema:"sort,omitempty"`
-	// Supported fields:
-	// createdAt, serviceDate, sourceId, recipientDate, internalCode
-	// Supported sort modes asc:desc. If not supplied default is asc.
-
-	IncludeLinkedDocumentRecipients bool `schema:"includeLinkedDocumentRecipients,omitempty"`
-	// Defaults to false
-	// Include recipients from linked documents.
-
-	FolioIDs []int64 `schema:"folioIds,omitempty"`
-	// Filter by folio IDs.
 }
 
 func (p GetFiscalDocumentRecipientsQueryParams) ToURLValues() (url.Values, error) {

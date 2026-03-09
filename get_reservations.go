@@ -142,74 +142,15 @@ func (r *GetReservationsRequest) NewResponseBody() *GetReservationsResponseBody 
 }
 
 type GetReservationsResponseBody struct {
-	Success bool   `json:"success"`
-	Count   int    `json:"count"`
-	Total   int    `json:"total"`
-	Message string `json:"message"`
-	Data    []struct {
-		PropertyID           string   `json:"propertyID"`    // Properties identifier
-		ReservationID        string   `json:"reservationID"` // Reservation's unique identifier
-		DateCreated          DateTime `json:"dateCreated"`
-		DateModified         DateTime `json:"dateModified"`
-		Status               Status   `json:"status"`
-		GuestID              Int      `json:"guestID"`
-		GuestName            string   `json:"guestName"`
-		StartDate            Date     `json:"startDate"`
-		EndDate              Date     `json:"endDate"`
-		Adults               Int      `json:"adults"`
-		Children             Int      `json:"children"`
-		Balance              float64  `json:"balance"`
-		SourceName           string   `json:"sourceName"` // Source of reservation
-		ThirdPartyIdentifier string   `json:"thirdPartyIdentifier"`
-		GuestList            map[string]struct {
-			GuestID string `json:"guestID"` // ID of the guest
-
-			GuestName                   string `json:"guestName"`
-			GuestFirstName              string `json:"guestFirstName"`
-			GuestLastName               string `json:"guestLastName"`
-			Guestgender                 string `json:"guestGender"` // Toegestane waarden: "M", "F", "N/A"
-			GuestEmail                  string `json:"guestEmail"`
-			GuestPhone                  string `json:"guestPhone"`
-			GuestCellPhone              string `json:"guestCellPhone"`
-			GuestAddress                string `json:"guestAddress"`
-			GuestAddress2               string `json:"guestAddress2"`
-			GuestCity                   string `json:"guestCity"`
-			GuestState                  string `json:"guestState"`
-			GuestCountry                string `json:"guestCountry"`
-			GuestZip                    string `json:"guestZip"`
-			GuestBirthdate              Date   `json:"guestBirthdate"`
-			GuestDocumentType           string `json:"guestDocumentType"`
-			GuestDocumentNumber         string `json:"guestDocumentNumber"`
-			GuestDocumentIssueDate      Date   `json:"guestDocumentIssueDate"`
-			GuestDocumentIsseingCountry string `json:"guestDocumentIssuingCountry"`
-			GuestDocumentExpirationDate Date   `json:"guestDocumentExpirationDate"`
-			TaxID                       string `json:"taxID"`        //  Guest's tax ID
-			CompanyTaxID                string `json:"companyTaxID"` // Guest's company tax ID
-			CompanyName                 string `json:"companyName"`  // Guest's company name
-			SubReservationID            string `json:"subReservationID"`
-			StartDate                   Date   `json:"startDate"`
-			EndDate                     Date   `json:"endDate"`
-			AssignedRoom                bool   `json:"assignedRoom"` // Returns true if guest has roomed assigned, false if not
-			RoomID                      string `json:"roomID"`       // Room ID where guest is assigned
-			RoomName                    string `json:"roomName"`     // Room Name where guest is assigned
-			RoomTypeName                string `json:"roomTypeName"` // Room Name where guest is assigned
-			IsMainGuest                 bool   `json:"isMainGuest"`
-			Rooms                       []struct {
-				RoomID       string `json:"roomID"`       // Room ID where guest is assigned
-				RoomName     string `json:"roomName"`     // Room Name where guest is assigned
-				RoomTypeName string `json:"roomTypeName"` // Room Type Name where guest is assigned
-			} // List of all rooms that guest is assigned to
-			CustomFields []struct {
-				CustomFieldName  string `json:"customFieldName"`  // Custom Field Name
-				CustomFieldValue string `json:"customFieldValue"` // Custom Field Value
-			} // `json:"customFields
-			IsAnonymized bool `json:"isAnonymized"` //  Flag indicating the guest data was removed upon request
-		} `json:"guestList"`
-	} `json:"data"`
+	Success bool         `json:"success"`
+	Count   int          `json:"count"`
+	Total   int          `json:"total"`
+	Message string       `json:"message"`
+	Data    Reservations `json:"data"`
 }
 
 func (r *GetReservationsRequest) URL() url.URL {
-	return r.client.GetEndpointURL("getReservations", r.PathParams())
+	return r.client.GetEndpointURL("/api/v1.3/getReservations", r.PathParams())
 }
 
 func (r *GetReservationsRequest) Do(ctx context.Context) (GetReservationsResponseBody, error) {
