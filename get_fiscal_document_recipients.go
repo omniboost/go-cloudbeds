@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -138,9 +139,9 @@ func (r *GetFiscalDocumentRecipientsRequest) URL() url.URL {
 	return r.client.GetEndpointURL("fiscal-document/v1/fiscal-documents/{{.id}}/recipients", r.PathParams())
 }
 
-func (r *GetFiscalDocumentRecipientsRequest) Do() (GetFiscalDocumentRecipientsResponseBody, error) {
+func (r *GetFiscalDocumentRecipientsRequest) Do(ctx context.Context) (GetFiscalDocumentRecipientsResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

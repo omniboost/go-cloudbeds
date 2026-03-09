@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"os"
@@ -39,7 +40,7 @@ func TestGetHotelDetails(t *testing.T) {
 
 	req := client.NewGetHotelDetailsRequest()
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

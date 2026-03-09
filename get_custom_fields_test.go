@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -12,7 +13,7 @@ func TestGetCustomFields(t *testing.T) {
 	client := client()
 	req := client.NewGetCustomFieldsRequest()
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

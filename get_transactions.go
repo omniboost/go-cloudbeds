@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"time"
@@ -183,9 +184,9 @@ func (r *GetTransactionsRequest) URL() url.URL {
 	return r.client.GetEndpointURL("accounting/v1.0/transactions", r.PathParams())
 }
 
-func (r *GetTransactionsRequest) Do() (GetTransactionsResponseBody, error) {
+func (r *GetTransactionsRequest) Do(ctx context.Context) (GetTransactionsResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}
@@ -201,8 +202,8 @@ func (r *GetTransactionsRequest) Do() (GetTransactionsResponseBody, error) {
 	return *responseBody, err
 }
 
-func (r *GetTransactionsRequest) All() (GetTransactionsResponseBody, error) {
-	resp, err := r.Do()
+func (r *GetTransactionsRequest) All(ctx context.Context) (GetTransactionsResponseBody, error) {
+	resp, err := r.Do(ctx)
 	if err != nil {
 		return resp, err
 	}
@@ -211,7 +212,7 @@ func (r *GetTransactionsRequest) All() (GetTransactionsResponseBody, error) {
 
 	for resp.NextPageToken != "" {
 		r.RequestBody().PageToken = resp.NextPageToken
-		resp, err = r.Do()
+		resp, err = r.Do(ctx)
 		if err != nil {
 			return resp, err
 		}

@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -163,9 +164,9 @@ func (r *GetFiscalDocumentTransactionsRequest) URL() url.URL {
 	return r.client.GetEndpointURL("fiscal-document/v1/fiscal-documents/{{.id}}/transactions", r.PathParams())
 }
 
-func (r *GetFiscalDocumentTransactionsRequest) Do() (GetFiscalDocumentTransactionsResponseBody, error) {
+func (r *GetFiscalDocumentTransactionsRequest) Do(ctx context.Context) (GetFiscalDocumentTransactionsResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}
@@ -181,8 +182,8 @@ func (r *GetFiscalDocumentTransactionsRequest) Do() (GetFiscalDocumentTransactio
 	return *responseBody, err
 }
 
-func (r *GetFiscalDocumentTransactionsRequest) All() (GetFiscalDocumentTransactionsResponseBody, error) {
-	resp, err := r.Do()
+func (r *GetFiscalDocumentTransactionsRequest) All(ctx context.Context) (GetFiscalDocumentTransactionsResponseBody, error) {
+	resp, err := r.Do(ctx)
 	if err != nil {
 		return resp, err
 	}
@@ -191,7 +192,7 @@ func (r *GetFiscalDocumentTransactionsRequest) All() (GetFiscalDocumentTransacti
 
 	for resp.NextPageToken != "" {
 		r.QueryParams().PageToken = resp.NextPageToken
-		resp, err = r.Do()
+		resp, err = r.Do(ctx)
 		if err != nil {
 			return resp, err
 		}

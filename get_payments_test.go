@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -24,7 +25,7 @@ func TestGetPayments(t *testing.T) {
 	req.QueryParams().CreatedFrom = cloudbeds.DateTime{lastYear}
 	req.QueryParams().CreatedTo = cloudbeds.DateTime{today}
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

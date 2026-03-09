@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -13,7 +14,7 @@ func TestGetFiscalDocumentTransactions(t *testing.T) {
 	req := client.NewGetFiscalDocumentTransactionsRequest()
 	req.PathParams().ID = "135421797875914"
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

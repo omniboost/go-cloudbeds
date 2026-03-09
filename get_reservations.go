@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -211,9 +212,9 @@ func (r *GetReservationsRequest) URL() url.URL {
 	return r.client.GetEndpointURL("getReservations", r.PathParams())
 }
 
-func (r *GetReservationsRequest) Do() (GetReservationsResponseBody, error) {
+func (r *GetReservationsRequest) Do(ctx context.Context) (GetReservationsResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}
@@ -229,9 +230,9 @@ func (r *GetReservationsRequest) Do() (GetReservationsResponseBody, error) {
 	return *responseBody, err
 }
 
-func (r *GetReservationsRequest) All() (GetReservationsResponseBody, error) {
+func (r *GetReservationsRequest) All(ctx context.Context) (GetReservationsResponseBody, error) {
 	r.QueryParams().PageNumber = 1
-	resp, err := r.Do()
+	resp, err := r.Do(ctx)
 	if err != nil {
 		return resp, err
 	}
@@ -246,7 +247,7 @@ func (r *GetReservationsRequest) All() (GetReservationsResponseBody, error) {
 
 	for concat.Count < concat.Total {
 		r.QueryParams().PageNumber = r.QueryParams().PageNumber + 1
-		resp, err := r.Do()
+		resp, err := r.Do(ctx)
 		if err != nil {
 			return resp, err
 		}

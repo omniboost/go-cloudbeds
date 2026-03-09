@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -15,7 +16,7 @@ func TestGetReservation(t *testing.T) {
 	req.QueryParams().ReservationID = "2397774183890"
 	req.QueryParams().IncludeGuestRequirements = true
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

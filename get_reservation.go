@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -182,9 +183,9 @@ func (r *GetReservationRequest) URL() url.URL {
 	return r.client.GetEndpointURL("/api/v1.3/getReservation", r.PathParams())
 }
 
-func (r *GetReservationRequest) Do() (GetReservationResponseBody, error) {
+func (r *GetReservationRequest) Do(ctx context.Context) (GetReservationResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

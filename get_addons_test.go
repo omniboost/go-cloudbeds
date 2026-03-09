@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -14,7 +15,7 @@ func TestGetAddons(t *testing.T) {
 	client.SetDisallowUnknownFields(true)
 
 	req := client.NewGetAddonsRequest()
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -101,9 +102,9 @@ func (r *UserinfoRequest) URL() url.URL {
 	return r.client.GetEndpointURL("userinfo", r.PathParams())
 }
 
-func (r *UserinfoRequest) Do() (UserinfoResponseBody, error) {
+func (r *UserinfoRequest) Do(ctx context.Context) (UserinfoResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

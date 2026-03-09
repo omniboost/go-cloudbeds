@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -100,9 +101,9 @@ func (r *GetCustomTransactionCodesRequest) URL() url.URL {
 	return r.client.GetEndpointURL("accounting/v1.0/custom-transaction-codes", r.PathParams())
 }
 
-func (r *GetCustomTransactionCodesRequest) Do() (GetCustomTransactionCodesResponseBody, error) {
+func (r *GetCustomTransactionCodesRequest) Do(ctx context.Context) (GetCustomTransactionCodesResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -17,7 +18,7 @@ func TestGetReservations(t *testing.T) {
 	req.QueryParams().ResultsFrom = cloudbeds.DateTime{Time: time.Date(2024, 12, 30, 3, 0, 0, 0, time.UTC)}
 	req.QueryParams().ResultsTo = cloudbeds.DateTime{Time: time.Date(2026, 12, 31, 3, 0, 0, 0, time.UTC)}
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}
@@ -32,7 +33,7 @@ func TestGetReservationsAll(t *testing.T) {
 	req.QueryParams().IncludeGuestsDetails = true
 	// req.QueryParams().Status = cloudbeds.StatusCheckedIn
 
-	resp, err := req.All()
+	resp, err := req.All(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

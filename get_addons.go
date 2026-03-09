@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -102,9 +103,9 @@ func (r *GetAddonsRequest) URL() url.URL {
 	return r.client.GetEndpointURL("addons/v1/addons", r.PathParams())
 }
 
-func (r *GetAddonsRequest) Do() (GetAddonsResponseBody, error) {
+func (r *GetAddonsRequest) Do(ctx context.Context) (GetAddonsResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

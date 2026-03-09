@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -98,9 +99,9 @@ func (r *AccessTokenCheckRequest) URL() url.URL {
 	return r.client.GetEndpointURL("access_token_check", r.PathParams())
 }
 
-func (r *AccessTokenCheckRequest) Do() (AccessTokenCheckResponseBody, error) {
+func (r *AccessTokenCheckRequest) Do(ctx context.Context) (AccessTokenCheckResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

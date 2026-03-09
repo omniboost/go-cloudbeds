@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -149,9 +150,9 @@ func (r *GetReportsQueryDataRequest) URL() url.URL {
 	return r.client.GetEndpointURL("datainsights/v1.1/reports/query/data", r.PathParams())
 }
 
-func (r *GetReportsQueryDataRequest) Do() (GetReportsQueryDataResponseBody, error) {
+func (r *GetReportsQueryDataRequest) Do(ctx context.Context) (GetReportsQueryDataResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

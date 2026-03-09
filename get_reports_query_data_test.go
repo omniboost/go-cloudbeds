@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -244,7 +245,7 @@ func TestGetReportsQueryData(t *testing.T) {
     "custom_field_cdfs": []
 }`), req.RequestBody())
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

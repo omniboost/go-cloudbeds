@@ -1,6 +1,7 @@
 package cloudbeds_test
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"testing"
@@ -29,7 +30,7 @@ func TestGetTransactions(t *testing.T) {
 		},
 	})
 
-	resp, err := req.Do()
+	resp, err := req.Do(context.Background())
 	if err != nil {
 		t.Error(err)
 	}
@@ -59,7 +60,7 @@ func TestGetTransactionsAll(t *testing.T) {
 		Limit: 10,
 	})
 
-	resp, err := req.All()
+	resp, err := req.All(context.Background())
 	if err != nil {
 		t.Error(err)
 	}

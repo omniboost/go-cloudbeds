@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -102,9 +103,9 @@ func (r *GetCustomFieldsRequest) URL() url.URL {
 	return r.client.GetEndpointURL("getCustomFields", r.PathParams())
 }
 
-func (r *GetCustomFieldsRequest) Do() (GetCustomFieldsResponseBody, error) {
+func (r *GetCustomFieldsRequest) Do(ctx context.Context) (GetCustomFieldsResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}

@@ -1,6 +1,7 @@
 package cloudbeds
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -122,9 +123,9 @@ func (r *GetPaymentsRequest) URL() url.URL {
 	return r.client.GetEndpointURL("getPayments", r.PathParams())
 }
 
-func (r *GetPaymentsRequest) Do() (GetPaymentsResponseBody, error) {
+func (r *GetPaymentsRequest) Do(ctx context.Context) (GetPaymentsResponseBody, error) {
 	// Create http request
-	req, err := r.client.NewRequest(nil, r.Method(), r.URL(), r.RequestBody())
+	req, err := r.client.NewRequest(ctx, r.Method(), r.URL(), r.RequestBody())
 	if err != nil {
 		return *r.NewResponseBody(), err
 	}
