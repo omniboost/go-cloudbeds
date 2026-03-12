@@ -375,3 +375,28 @@ type Reservation struct {
 	} `json:"guestList"`
 	IsAnonymized bool `json:"isAnonymized"` //  Flag indicating the guest data was removed upon request
 }
+
+type FiscalDocumentTransactions []FiscalDocumentTransaction
+
+type FiscalDocumentTransaction struct {
+		ID                       string   `json:"id"`
+		PropertyID               string   `json:"propertyId"`
+		SourceID                 string   `json:"sourceId"`
+		SourceIdentifier         string   `json:"sourceIdentifier"`
+		SourceKind               string   `json:"sourceKind"` // Kind of the source entity (GROUP_PROFILE RESERVATION HOUSE_ACCOUNT ACCOUNTS_RECEIVABLE_LEDGER)
+		TransactionDate          string   `json:"transactionDate"`
+		GuestName                string   `json:"guestName"`
+		Description              string   `json:"description"`
+		InternalCode             string   `json:"internalCode"`
+		Amount                   float64  `json:"amount"`
+		AvailableAmount          float64  `json:"availableAmount"`
+		DocumentFiscalizedAmount *float64 `json:"documentFiscalizedAmount"`
+		FolioID                  string   `json:"folioId"`
+		Status                   string   `json:"status"` // Status of the transaction - PENDING for unpaid transactions, POSTED for paid transactions
+
+		PaidAmount float64 `json:"paidAmount"`
+
+		Allocations []struct {
+			ReceiptNumber string `json:"receiptNumber"`
+		} `json:"allocations"`
+}
