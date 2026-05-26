@@ -176,6 +176,8 @@ type GetTransactionsResponseBody struct {
 		SourceIdentifier string `json:"sourceIdentifier"`
 		// identifier of a booking room
 		SubSourceIdentifier string `json:"subSourceIdentifier"`
+		// Notes associated with the transaction
+		Notes string `json:"notes"`
 	} `json:"transactions"`
 	NextPageToken string `json:"nextPageToken"`
 }
