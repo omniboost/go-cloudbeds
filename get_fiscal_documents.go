@@ -181,8 +181,8 @@ type GetFiscalDocumentsResponseBody struct {
 		FileName                    string  `json:"fileName"`                    // Name of the fiscal document file
 		Amount                      float64 `json:"amount"`                      // Total amount of the fiscal document
 		Balance                     float64 `json:"balance"`                     // Remaining balance of the fiscal document
-		DueDate                     Date    `json:"dueDate"`                     // Due date (deprecated)
-		DueDatePropertyTimezone     Date    `json:"dueDatePropertyTimezone"`     // Due date in property timezone
+		DueDate                     *Date   `json:"dueDate"`                     // Due date (deprecated)
+		DueDatePropertyTimezone     *Date   `json:"dueDatePropertyTimezone"`     // Due date in property timezone
 
 		Recipients []struct {
 			ID          string `json:"id"`          // Recipient unique identifier
