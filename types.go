@@ -378,25 +378,71 @@ type Reservation struct {
 
 type FiscalDocumentTransactions []FiscalDocumentTransaction
 
+type TransactionTaxesList []TransactionTaxes
+
+func (t TransactionTaxesList) MarshalJSON() ([]byte, error) {
+	// Force empty array if its null / nil so its consistant across all of cloudbeds
+	if t == nil {
+		return []byte("[]"), nil
+	}
+	type alias TransactionTaxesList
+	return json.Marshal(alias(t))
+}
+
 type FiscalDocumentTransaction struct {
-		ID                       string   `json:"id"`
-		PropertyID               string   `json:"propertyId"`
-		SourceID                 string   `json:"sourceId"`
-		SourceIdentifier         string   `json:"sourceIdentifier"`
-		SourceKind               string   `json:"sourceKind"` // Kind of the source entity (GROUP_PROFILE RESERVATION HOUSE_ACCOUNT ACCOUNTS_RECEIVABLE_LEDGER)
-		TransactionDate          string   `json:"transactionDate"`
-		GuestName                string   `json:"guestName"`
-		Description              string   `json:"description"`
-		InternalCode             string   `json:"internalCode"`
-		Amount                   float64  `json:"amount"`
-		AvailableAmount          float64  `json:"availableAmount"`
-		DocumentFiscalizedAmount *float64 `json:"documentFiscalizedAmount"`
-		FolioID                  string   `json:"folioId"`
-		Status                   string   `json:"status"` // Status of the transaction - PENDING for unpaid transactions, POSTED for paid transactions
+	ID                              string   `json:"id"`
+	PropertyID                      string   `json:"propertyId"`
+	SourceID                        string   `json:"sourceId"`
+	SourceIdentifier                string   `json:"sourceIdentifier"`
+	SourceKind                      string   `json:"sourceKind"` // Kind of the source entity (GROUP_PROFILE RESERVATION HOUSE_ACCOUNT ACCOUNTS_RECEIVABLE_LEDGER)
+	TransactionDate                 string   `json:"transactionDate"`
+	GuestName                       string   `json:"guestName"`
+	Description                     string   `json:"description"`
+	InternalCode                    string   `json:"internalCode"`
+	Amount                          float64  `json:"amount"`
+	AvailableAmount                 float64  `json:"availableAmount"`
+	DocumentFiscalizedAmount        *float64 `json:"documentFiscalizedAmount"`
+	Currency                        string   `json:"currency"`
+	DisplayCurrency                 any      `json:"displayCurrency"`
+	DisplayAmount                   any      `json:"displayAmount"`
+	DisplayAvailableAmount          any      `json:"displayAvailableAmount"`
+	DisplayDocumentFiscalizedAmount any      `json:"displayDocumentFiscalizedAmount"`
+	FolioID                         string   `json:"folioId"`
+	Status                          string   `json:"status"` // Status of the transaction - PENDING for unpaid transactions, POSTED for paid transactions
+	InvoicedStatus                  string   `json:"invoicedStatus"`
+	PaidAmount                      float64  `json:"paidAmount"`
 
-		PaidAmount float64 `json:"paidAmount"`
+	Allocations []struct {
+		ReceiptNumber string `json:"receiptNumber"`
+	} `json:"allocations"`
 
-		Allocations []struct {
-			ReceiptNumber string `json:"receiptNumber"`
-		} `json:"allocations"`
+	Taxes TransactionTaxesList `json:"taxes"`
+}
+
+type TransactionTaxes struct {
+	ID                              string   `json:"id"`
+	PropertyID                      string   `json:"propertyId"`
+	SourceID                        string   `json:"sourceId"`
+	SourceIdentifier                string   `json:"sourceIdentifier"`
+	SourceKind                      string   `json:"sourceKind"`
+	TransactionDate                 string   `json:"transactionDate"`
+	GuestName                       string   `json:"guestName"`
+	Description                     string   `json:"description"`
+	InternalCode                    string   `json:"internalCode"`
+	Amount                          float64  `json:"amount"`
+	AvailableAmount                 float64  `json:"availableAmount"`
+	DocumentFiscalizedAmount        *float64 `json:"documentFiscalizedAmount"`
+	Currency                        string   `json:"currency"`
+	DisplayAmount                   any      `json:"displayAmount"`
+	DisplayCurrency                 any      `json:"displayCurrency"`
+	DisplayAvailableAmount          any      `json:"displayAvailableAmount"`
+	DisplayDocumentFiscalizedAmount *float64 `json:"displayDocumentFiscalizedAmount"`
+	FolioID                         *string  `json:"folioId"`
+	Status                          string   `json:"status"`
+	PaidAmount                      *float64 `json:"paidAmount"`
+	InvoicedStatus                  string   `json:"invoicedStatus"`
+	Taxes                           any      `json:"taxes,omitempty"`
+	Allocations                     []struct {
+		ReceiptNumber string `json:"receiptNumber"`
+	} `json:"allocations"`
 }
