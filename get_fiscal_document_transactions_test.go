@@ -12,7 +12,8 @@ import (
 func TestGetFiscalDocumentTransactions(t *testing.T) {
 	client := client()
 	req := client.NewGetFiscalDocumentTransactionsRequest()
-	req.PathParams().ID = "135421797875914"
+	req.QueryParams().NestTaxes = true
+	req.PathParams().ID = "236191234187517"
 
 	resp, err := req.Do(context.Background())
 	if err != nil {

@@ -46,6 +46,9 @@ type GetFiscalDocumentTransactionsQueryParams struct {
 
 	FolioIDs []int64 `schema:"folioIds,omitempty"`
 	// Filter by folio IDs.
+
+	NestTaxes bool `schema:"nestTaxes"`
+	// When true tax transactions are nested inside their parent transctions
 }
 
 func (p GetFiscalDocumentTransactionsQueryParams) ToURLValues() (url.Values, error) {
