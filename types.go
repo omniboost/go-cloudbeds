@@ -71,6 +71,18 @@ type CustomTransactionCode struct {
 
 type CustomTransactionCodes []CustomTransactionCode
 
+type CustomGeneralLedgerCodes []CustomGeneralLedgerCode
+
+type CustomGeneralLedgerCode struct {
+	ID              string `json:"id"`
+	Version         int    `json:"version"`
+	Name            string `json:"name"`
+	Code            string `json:"code"`
+	ConditionalCode string `json:"conditionalCode"`
+	Group           string `json:"group"`
+	Archived        bool   `json:"archived"`
+}
+
 type InternalTransactionCode struct {
 	ID          int    `json:"id"`
 	Code        string `json:"code"`
