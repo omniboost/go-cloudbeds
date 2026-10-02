@@ -174,6 +174,8 @@ type Transaction struct {
 	TransactionDatetimePropertyTime time.Time `json:"transactionDatetimePropertyTime"`
 	// Date when the posted transaction was created (property time).
 	ServiceDate string `json:"serviceDate"`
+	// Business date the posted transaction belongs to (property time), aligned to night audit.
+	BusinessDate Date `json:"BusinessDate"`
 	// Date time when the transaction was inserted on the database. (ISO 8601) in UTC
 	CreatedAt time.Time `json:"createdAt"`
 	// if source_kind = RESERVATION, this field will contain a reservation identifier. For a transaction with source_kind = GROUP_PROFILE, this field will contain a group code. For source_king = HOUSE_ACCOUNT it will be null.
